@@ -85,7 +85,7 @@ export default function Home() {
         <div className="fixed bottom-6 left-6 z-[100] max-w-sm bg-card border border-border p-6 shadow-2xl animate-fade-in rounded-lg flex gap-4">
           {preorderImage && (
             <div className="w-20 h-20 relative shrink-0 rounded-md overflow-hidden border border-border block">
-              <Image src={preorderImage} alt={preorderTitle} fill className="object-cover" />
+              <Image src={preorderImage} alt={preorderTitle} fill className="object-cover" unoptimized />
             </div>
           )}
           <div className="flex-1">
@@ -180,126 +180,101 @@ export default function Home() {
 
       {/* 4. BENTO SHOWCASE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-12">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-    {/* Keychain */}
-    <Link
-      href={`/shop/${keychain?.slug || 'gantungan-kunci-creeper-wolf'}`}
-      className="bg-card overflow-hidden group flex flex-col border border-border rounded-2xl shadow-sm hover:shadow-md transition-all"
-    >
-      <div className="p-6 sm:p-8 flex flex-col flex-1">
-        <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-2">
-          {keychain?.name || 'Gantungan Kunci Creeper & Wolf'}
-        </h3>
+   
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <div className="text-2xl font-bold text-muted-foreground mb-6">
-          Rp {(keychain?.price || 45000).toLocaleString('id-ID')}
+          <Link href={`/shop/${keychain?.slug || 'gantungan-kunci-creeper-wolf'}`} className="bg-card overflow-hidden group flex flex-col justify-between p-6 sm:p-8 border border-border rounded-2xl shadow-sm hover:shadow-md transition-all">
+            <div className="relative z-10 w-full text-left flex flex-col flex-1">
+
+              <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-2">
+                {keychain?.name || 'Gantungan Kunci Creeper & Wolf'}
+              </h3>
+              <div className="text-2xl font-bold text-muted-foreground mb-6">
+                Rp {(keychain?.price || 45000).toLocaleString('id-ID')}
+              </div>
+              <div className="mt-auto">
+                <div className={cn(buttonVariants({ size: "sm" }), "font-bold gap-2")}>
+                  Beli Sekarang <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+            <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-border/50 bg-muted shrink-0 mt-8">
+              <Image
+                src={keychain?.image || "https://picsum.photos/seed/craft2/800/800"}
+                alt={keychain?.name || "Gantungan Kunci"}
+                fill
+                className="object-cover"
+                referrerPolicy="no-referrer"
+                unoptimized
+              />
+            </div>
+          </Link>
+
+          <Link href={`/shop/${enderman?.slug || 'pajangan-rak-enderman'}`} className="bg-card overflow-hidden group flex flex-col justify-between p-6 sm:p-8 border border-border rounded-2xl shadow-sm hover:shadow-md transition-all">
+            <div className="relative z-10 w-full text-left flex flex-col flex-1">
+
+              <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-2">
+                {enderman?.name || 'Pajangan Rak Enderman'}
+              </h3>
+
+              <div className="text-2xl font-bold text-muted-foreground mb-6">
+                Rp {(enderman?.price || 120000).toLocaleString('id-ID')}
+              </div>
+              <div className="mt-auto">
+                <div className={cn(buttonVariants({ size: "sm" }), "font-bold gap-2")}>
+                  Beli Sekarang <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+
+            <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-border/50 bg-muted shrink-0 mt-8">
+              <Image
+                src={enderman?.image || "https://picsum.photos/seed/craft4/800/800"}
+                alt={enderman?.name || "Enderman"}
+                fill
+                className="object-cover"
+                referrerPolicy="no-referrer"
+                unoptimized
+              />
+            </div>
+          </Link>
+
+          <Link href={`/shop/${chest?.slug || 'kotak-peti-voxel'}`} className="bg-card overflow-hidden group flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 border border-border rounded-2xl shadow-sm hover:shadow-md transition-all md:col-span-2 gap-8">
+            <div className="relative z-10 w-full md:w-1/2 text-left flex flex-col justify-center h-full">
+
+              <h3 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-2">
+                {chest?.name || 'Kotak Peti Voxel'}
+              </h3>
+              <div className="text-2xl font-bold text-muted-foreground mb-6">
+                Rp {(chest?.price || 200000).toLocaleString('id-ID')}
+              </div>
+              <div className="self-start mt-auto md:mt-0 pt-4 md:pt-0">
+                <div className={cn(buttonVariants({ size: "sm" }), "font-bold gap-2")}>
+                  Beli Sekarang <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+
+            <div className="relative w-full md:w-1/2 aspect-square rounded-xl overflow-hidden border border-border/50 bg-muted shrink-0">
+              <Image
+                src={chest?.image || "https://picsum.photos/seed/craft5/800/800"}
+                alt={chest?.name || "Kotak Peti"}
+                fill
+                className="object-cover"
+                referrerPolicy="no-referrer"
+                unoptimized
+              />
+            </div>
+          </Link>
+
         </div>
 
-        <div className="mt-auto">
-          <div
-            className={cn(
-              buttonVariants({ size: "sm" }),
-              "font-bold gap-2"
-            )}
-          >
-            Beli Sekarang <ArrowRight className="w-4 h-4" />
-          </div>
+        <div className="mt-20 flex flex-col items-center justify-center text-center">
+          <div className="h-0.5 w-1/4 bg-border mb-10 rounded-full" />
+          <ViewAllCollectionsButton animatePulse />
         </div>
-      </div>
-
-      <div className="relative w-full aspect-square">
-        <Image
-          src={keychain?.image || "https://picsum.photos/seed/craft2/800/800"}
-          alt={keychain?.name || "Gantungan Kunci"}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          referrerPolicy="no-referrer"
-        />
-      </div>
-    </Link>
-
-    {/* Enderman */}
-    <Link
-      href={`/shop/${enderman?.slug || 'pajangan-rak-enderman'}`}
-      className="bg-card overflow-hidden group flex flex-col border border-border rounded-2xl shadow-sm hover:shadow-md transition-all"
-    >
-      <div className="p-6 sm:p-8 flex flex-col flex-1">
-        <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-2">
-          {enderman?.name || 'Pajangan Rak Enderman'}
-        </h3>
-
-        <div className="text-2xl font-bold text-muted-foreground mb-6">
-          Rp {(enderman?.price || 120000).toLocaleString('id-ID')}
-        </div>
-
-        <div className="mt-auto">
-          <div
-            className={cn(
-              buttonVariants({ size: "sm" }),
-              "font-bold gap-2"
-            )}
-          >
-            Beli Sekarang <ArrowRight className="w-4 h-4" />
-          </div>
-        </div>
-      </div>
-
-      <div className="relative w-full aspect-square">
-        <Image
-          src={enderman?.image || "https://picsum.photos/seed/craft4/800/800"}
-          alt={enderman?.name || "Enderman"}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          referrerPolicy="no-referrer"
-        />
-      </div>
-    </Link>
-
-    {/* Chest */}
-    <Link
-      href={`/shop/${chest?.slug || 'kotak-peti-voxel'}`}
-      className="bg-card overflow-hidden group flex flex-col md:flex-row md:col-span-2 border border-border rounded-2xl shadow-sm hover:shadow-md transition-all"
-    >
-      <div className="p-6 sm:p-8 w-full md:w-1/2 flex flex-col justify-center">
-        <h3 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-2">
-          {chest?.name || 'Kotak Peti Voxel'}
-        </h3>
-
-        <div className="text-2xl font-bold text-muted-foreground mb-6">
-          Rp {(chest?.price || 200000).toLocaleString('id-ID')}
-        </div>
-
-        <div className="self-start mt-auto">
-          <div
-            className={cn(
-              buttonVariants({ size: "sm" }),
-              "font-bold gap-2"
-            )}
-          >
-            Beli Sekarang <ArrowRight className="w-4 h-4" />
-          </div>
-        </div>
-      </div>
-
-      <div className="relative w-full md:w-1/2 aspect-square md:aspect-auto min-h-[320px]">
-        <Image
-          src={chest?.image || "https://picsum.photos/seed/craft5/800/800"}
-          alt={chest?.name || "Kotak Peti"}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          referrerPolicy="no-referrer"
-        />
-      </div>
-    </Link>
-
-  </div>
-
-  <div className="mt-20 flex flex-col items-center justify-center text-center">
-    <div className="h-0.5 w-1/4 bg-border mb-10 rounded-full" />
-    <ViewAllCollectionsButton animatePulse />
-  </div>
-</section>
+      </section>
       {/* 2. DYNAMIC SLIDESHOW */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
