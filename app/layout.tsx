@@ -23,21 +23,13 @@ export const metadata: Metadata = {
 
 import { Suspense } from 'react';
 import { RootSkeleton } from '@/components/RootSkeleton';
-import { unstable_cache } from 'next/cache';
-
-const getStoreConfig = unstable_cache(
-  async () => {
-    const { data } = await supabase.from('store_config').select('config').eq('id', 1).single();
-    return data?.config;
-  },
-  ['store-config'],
-  { revalidate: 60 }
-);
+export const revalidate = 60;
 
 async function AppShell({ children }: { children: React.ReactNode }) {
   let config = null;
   try {
-    config = await getStoreConfig();
+    const { data } = await supabase.from('store_config').select('config').eq('id', 1).single();
+    config = data?.config;
   } catch (err) {
     console.error("SSR fetch config error:", err);
   }

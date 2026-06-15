@@ -8,7 +8,7 @@ export function StoreHydrator({ config }: { config: any }) {
 
   useEffect(() => {
     if (!isHydrated.current) {
-      if (config) {
+      if (config && Object.keys(config).length > 0) {
         // Category Migration for SSR config
         const migratedConfig = { ...config };
         if (migratedConfig.products) {
