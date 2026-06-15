@@ -147,7 +147,7 @@ export default function Home() {
               ))}
           </h1>
 
-          <p className="text-base sm:text-lg text-white font-medium mb-10 leading-relaxed max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-pre-wrap">
+          <p className="text-base sm:text-lg text-white font-semibold mb-10 leading-relaxed max-w-2xl [text-shadow:_0_2px_4px_rgb(0_0_0_/_100%),_0_0_16px_rgb(0_0_0_/_100%)] whitespace-pre-wrap">
             {heroSettings.heroDescription}
           </p>
 
