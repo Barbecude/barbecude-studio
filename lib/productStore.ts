@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Product, products as initialProducts } from './products';
 import { useEffect, useState } from 'react';
+import defaultStoreConfig from '../data/storeConfig.json';
+import { supabase } from './supabase';
 
 export interface FeatureType {
   id: number;
@@ -68,6 +70,11 @@ interface ProductState {
   preorderLinkSlug: string;
   preorderImage: string;
 
+  // Fetching from Supabase
+  fetchStoreConfig: () => Promise<void>;
+  fetchOrders: () => Promise<void>;
+  saveStoreConfig: () => Promise<void>;
+
   // Product actions
   addProduct: (product: Product) => void;
   updateProduct: (id: number, updated: Partial<Product>) => void;
@@ -95,8 +102,6 @@ interface ProductState {
   getOrderById: (orderId: string) => Order | undefined;
   getAllOrders: () => Order[];
 }
-
-import defaultStoreConfig from '../data/storeConfig.json';
 
 const defaultFeatures: FeatureType[] = defaultStoreConfig.features || [
   { id: 1, title: '100% Handmade', desc: 'Semua kerajinan dibuat dengan tangan degan hati - hati dan memerhatikan detail kecil untuk hasil yang berkualitas.', icon: 'HandHeart' },
@@ -128,6 +133,78 @@ export const useProductStore = create<ProductState>()(
       preorderLinkSlug: defaultStoreConfig.preorderLinkSlug || '',
       preorderImage: defaultStoreConfig.preorderImage || '',
 
+      fetchStoreConfig: async () => {
+        try {
+          const { data, error } = await supabase.from('store_config').select('config').eq('id', 1).single();
+          if (!error && data?.config) {
+            set((state) => ({ ...state, ...data.config }));
+          }
+        } catch (err) {
+          console.error("Error fetching config from Supabase:", err);
+        }
+      },
+
+      saveStoreConfig: async () => {
+        const state = get();
+        const configPayload = {
+          brandName: state.brandName,
+          brandSubtitle: state.brandSubtitle,
+          brandLogo: state.brandLogo,
+          brandDescription: state.brandDescription,
+          heroLabel: state.heroLabel,
+          heroTitle: state.heroTitle,
+          heroDescription: state.heroDescription,
+          heroImage: state.heroImage,
+          heroPrice: state.heroPrice,
+          heroDimensions: state.heroDimensions,
+          heroLinkSlug: state.heroLinkSlug,
+          preorderTitle: state.preorderTitle,
+          preorderDescription: state.preorderDescription,
+          preorderLinkSlug: state.preorderLinkSlug,
+          preorderImage: state.preorderImage,
+          features: state.features,
+          products: state.products
+        };
+        const { error } = await supabase
+          .from('store_config')
+          .upsert({ id: 1, config: configPayload });
+        if (error) {
+          throw error;
+        }
+      },
+
+      fetchOrders: async () => {
+        try {
+          const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+          if (!error && data) {
+            const mappedOrders = data.map(o => ({
+              orderId: o.order_id,
+              email: o.email,
+              phone: o.phone,
+              address: o.address,
+              country: o.country,
+              province: o.province,
+              city: o.city,
+              postalCode: o.postal_code,
+              detailAddress: o.detail_address,
+              latitude: o.latitude,
+              longitude: o.longitude,
+              cart: o.cart,
+              subtotal: o.subtotal,
+              shipping: o.shipping,
+              total: o.total,
+              status: o.status,
+              qrisCode: o.qris_code,
+              createdAt: o.created_at,
+              updatedAt: o.updated_at,
+            }));
+            set({ orders: mappedOrders });
+          }
+        } catch (err) {
+          console.error("Error fetching orders from Supabase:", err);
+        }
+      },
+
       addProduct: (product) => set((state) => ({ products: [...state.products, product] })),
       updateProduct: (id, updated) =>
         set((state) => ({
@@ -154,7 +231,7 @@ export const useProductStore = create<ProductState>()(
         if (existing) {
           return {
             cart: state.cart.map((item) =>
-              item.id === product.id ? { ...item, qty: item.qty + qty } : item
+               item.id === product.id ? { ...item, qty: item.qty + qty } : item
             ),
           };
         }
@@ -172,14 +249,40 @@ export const useProductStore = create<ProductState>()(
       })),
       clearCart: () => set({ cart: [] }),
 
-      addOrder: (order) => set((state) => ({ orders: [...state.orders, order] })),
-      updateOrderStatus: (orderId, status) => set((state) => ({
-        orders: state.orders.map((order) =>
-          order.orderId === orderId
-            ? { ...order, status, updatedAt: Date.now() }
-            : order
-        ),
-      })),
+      addOrder: async (order) => {
+        set((state) => ({ orders: [...state.orders, order] }));
+        await supabase.from('orders').insert({
+          order_id: order.orderId,
+          email: order.email,
+          phone: order.phone,
+          address: order.address,
+          country: order.country,
+          province: order.province,
+          city: order.city,
+          postal_code: order.postalCode,
+          detail_address: order.detailAddress,
+          latitude: order.latitude,
+          longitude: order.longitude,
+          cart: order.cart,
+          subtotal: order.subtotal,
+          shipping: order.shipping,
+          total: order.total,
+          status: order.status,
+          qris_code: order.qrisCode,
+          created_at: order.createdAt,
+          updated_at: order.updatedAt,
+        });
+      },
+      updateOrderStatus: async (orderId, status) => {
+        set((state) => ({
+          orders: state.orders.map((order) =>
+            order.orderId === orderId
+              ? { ...order, status, updatedAt: Date.now() }
+              : order
+          ),
+        }));
+        await supabase.from('orders').update({ status, updated_at: Date.now() }).eq('order_id', orderId);
+      },
       getOrderById: (orderId) => {
         const state = get();
         return state.orders.find((order) => order.orderId === orderId);
@@ -190,73 +293,24 @@ export const useProductStore = create<ProductState>()(
       },
     }),
     {
-      name: 'voxelwood-products-store',
-      storage: {
-        getItem: async (name) => {
-          if (typeof window === 'undefined') return null;
-          try {
-            const { get, set } = await import('idb-keyval');
-            const value = await get(name);
-            if (value) {
-              return typeof value === 'string' ? JSON.parse(value) : value;
-            }
-            
-            const localValue = localStorage.getItem(name);
-            if (localValue) {
-              const parsed = JSON.parse(localValue);
-              await set(name, localValue);
-              return parsed;
-            }
-          } catch (e) {
-            console.error('Error reading from IDB:', e);
-          }
-          return null;
-        },
-        setItem: async (name, value) => {
-          if (typeof window === 'undefined') return;
-          try {
-            const { set } = await import('idb-keyval');
-            await set(name, JSON.stringify(value));
-            localStorage.removeItem(name);
-          } catch (e) {
-            console.error('Error writing to IDB:', e);
-          }
-        },
-        removeItem: async (name) => {
-          if (typeof window === 'undefined') return;
-          try {
-            const { del } = await import('idb-keyval');
-            await del(name);
-            localStorage.removeItem(name);
-          } catch (e) {
-            console.error('Error removing from IDB:', e);
-          }
-        },
-      },
+      name: 'voxelwood-cart-store',
+      partialize: (state) => ({ cart: state.cart }), // HANYA CART yang disimpan di local storage
     }
   )
 );
 
-// Custom hooks to fetch data safely across SSR/hydration boundary
+// Custom hooks
 export function useProducts() {
   const storeProducts = useProductStore((state) => state.products);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? storeProducts : initialProducts;
 }
 
 export function useProductBySlug(slug: string) {
   const storeProducts = useProductStore((state) => state.products);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   const currentProducts = mounted ? storeProducts : initialProducts;
   return currentProducts.find((p) => p.slug === slug);
 }
@@ -264,66 +318,42 @@ export function useProductBySlug(slug: string) {
 export function useCart() {
   const storeCart = useProductStore((state) => state.cart);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? storeCart : [];
 }
 
 export function useFeatures() {
   const storeFeatures = useProductStore((state) => state.features);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? storeFeatures : defaultFeatures;
 }
 
 export function useBrandName() {
   const name = useProductStore((state) => state.brandName);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? name : '';
 }
 
 export function useBrandSubtitle() {
   const subtitle = useProductStore((state) => state.brandSubtitle);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? subtitle : '';
 }
 
 export function useBrandLogo() {
   const logo = useProductStore((state) => state.brandLogo);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? logo : '';
 }
 
 export function useBrandDescription() {
   const desc = useProductStore((state) => state.brandDescription);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? desc : '';
 }
 
@@ -337,30 +367,14 @@ export function useHeroSettings() {
   const heroLinkSlug = useProductStore((state) => state.heroLinkSlug);
 
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  return mounted ? { heroLabel, heroTitle, heroDescription, heroImage, heroPrice, heroDimensions, heroLinkSlug } : {
-    heroLabel: '',
-    heroTitle: '',
-    heroDescription: '',
-    heroImage: '',
-    heroPrice: 0,
-    heroDimensions: '',
-    heroLinkSlug: '',
-  };
+  useEffect(() => { setMounted(true); }, []);
+  return mounted ? { heroLabel, heroTitle, heroDescription, heroImage, heroPrice, heroDimensions, heroLinkSlug } : { heroLabel: '', heroTitle: '', heroDescription: '', heroImage: '', heroPrice: 0, heroDimensions: '', heroLinkSlug: '' };
 }
 
 export function useOrders() {
   const storeOrders = useProductStore((state) => state.orders);
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => { setMounted(true); }, []);
   return mounted ? storeOrders : [];
 }
 
@@ -371,15 +385,6 @@ export function usePreorderSettings() {
   const preorderImage = useProductStore((state) => state.preorderImage);
 
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  return mounted ? { preorderTitle, preorderDescription, preorderLinkSlug, preorderImage } : {
-    preorderTitle: '',
-    preorderDescription: '',
-    preorderLinkSlug: '',
-    preorderImage: '',
-  };
+  useEffect(() => { setMounted(true); }, []);
+  return mounted ? { preorderTitle, preorderDescription, preorderLinkSlug, preorderImage } : { preorderTitle: '', preorderDescription: '', preorderLinkSlug: '', preorderImage: '' };
 }

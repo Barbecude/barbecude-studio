@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   // Fully reactive state pattern to solve hydration and any visual latency
   const storeProducts = useProductStore((state) => state.products);
   const storeOrders = useOrders();
-  const { addProduct, updateProduct, deleteProduct, resetToDefault, updateOrderStatus } = useProductStore();
+  const { addProduct, updateProduct, deleteProduct, resetToDefault, updateOrderStatus, fetchOrders, fetchStoreConfig, saveStoreConfig } = useProductStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
 
@@ -66,6 +66,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     setOrders(storeOrders);
   }, [storeOrders]);
+
+  useEffect(() => {
+    fetchStoreConfig();
+    fetchOrders();
+  }, [fetchStoreConfig, fetchOrders]);
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
@@ -192,9 +197,10 @@ export default function AdminDashboard() {
     );
   };
 
-  const handleSaveBrandSettings = (e: React.FormEvent) => {
+  const handleSaveBrandSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Update local state first
       updateBrandName(inputBrandName, inputBrandSubtitle);
       updateBrandLogo(inputBrandLogo);
       updateBrandDescription(inputBrandDesc);
@@ -214,49 +220,17 @@ export default function AdminDashboard() {
         preorderLinkSlug: inputPreorderLinkSlug,
         preorderImage: inputPreorderImage
       });
-      showNotification('Pengaturan Brand dan Manfaat Utama berhasil disimpan!', 'success');
+      
+      // Save to Supabase
+      await saveStoreConfig();
+      showNotification('Pengaturan Brand berhasil disimpan ke Database!', 'success');
     } catch (e: any) {
-      if (e.name === 'QuotaExceededError' || e.message.includes('quota')) {
-        showNotification('Gagal: Ukuran gambar yang diupload terlalu besar untuk disimpan.', 'error');
+      console.error('Error saving brand settings:', e);
+      if (e.name === 'QuotaExceededError' || e.message?.includes('quota')) {
+        showNotification('Gagal: Ukuran gambar terlalu besar untuk disimpan.', 'error');
       } else {
-        showNotification('Terjadi kesalahan saat menyimpan pengaturan.', 'error');
+        showNotification('Gagal menyimpan ke database: ' + (e.message || e), 'error');
       }
-    }
-  };
-
-  const handleSaveDefaultsPermanently = async () => {
-    try {
-      const response = await fetch('/api/save-defaults', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          brandName: inputBrandName,
-          brandSubtitle: inputBrandSubtitle,
-          brandLogo: inputBrandLogo,
-          brandDescription: inputBrandDesc,
-          heroLabel: inputHeroLabel,
-          heroTitle: inputHeroTitle,
-          heroDescription: inputHeroDescription,
-          heroImage: inputHeroImage,
-          heroPrice: inputHeroPrice,
-          heroDimensions: inputHeroDimensions,
-          heroLinkSlug: inputHeroLinkSlug,
-          preorderTitle: inputPreorderTitle,
-          preorderDescription: inputPreorderDescription,
-          preorderLinkSlug: inputPreorderLinkSlug,
-          preorderImage: inputPreorderImage,
-          features: inputFeatures
-        })
-      });
-
-      if (response.ok) {
-        showNotification('Pengaturan Permanen Berhasil Disimpan ke Kode!', 'success');
-      } else {
-        const err = await response.json();
-        showNotification(err.error || 'Gagal menyimpan pengaturan permanen', 'error');
-      }
-    } catch (error) {
-      showNotification('Terjadi kesalahan koneksi', 'error');
     }
   };
 
@@ -308,7 +282,12 @@ export default function AdminDashboard() {
   const handleConfirmDelete = () => {
     if (productToDelete) {
       deleteProduct(productToDelete.id);
-      showNotification(`Produk "${productToDelete.name}" telah dihapus!`, 'success');
+      saveStoreConfig()
+        .then(() => showNotification(`Produk "${productToDelete.name}" telah dihapus dan disimpan ke database!`, 'success'))
+        .catch((err: any) => {
+          console.error(err);
+          showNotification('Gagal menyimpan perubahan ke database: ' + err.message, 'error');
+        });
       setProductToDelete(null);
     }
   };
@@ -319,7 +298,12 @@ export default function AdminDashboard() {
 
   const handleConfirmReset = () => {
     resetToDefault();
-    showNotification('Semua data produk telah di-reset ke bawaan pabrik!', 'info');
+    saveStoreConfig()
+      .then(() => showNotification('Semua data produk telah di-reset ke bawaan pabrik dan disimpan ke database!', 'info'))
+      .catch((err: any) => {
+        console.error(err);
+        showNotification('Gagal menyimpan reset ke database: ' + err.message, 'error');
+      });
     setIsResetConfirmOpen(false);
   };
 
@@ -517,12 +501,22 @@ export default function AdminDashboard() {
 
     if (editingId !== null) {
       updateProduct(editingId, productPayload);
-      showNotification(`Produk "${formFields.name}" berhasil diperbarui!`, 'success');
+      saveStoreConfig()
+        .then(() => showNotification(`Produk "${formFields.name}" berhasil diperbarui dan disimpan ke database!`, 'success'))
+        .catch((err: any) => {
+          console.error(err);
+          showNotification('Gagal menyimpan ke database: ' + err.message, 'error');
+        });
     } else {
       // Generate unique ID based on max existing ID
       const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
       addProduct({ id: newId, ...productPayload });
-      showNotification(`Produk baru "${formFields.name}" berhasil ditambahkan!`, 'success');
+      saveStoreConfig()
+        .then(() => showNotification(`Produk baru "${formFields.name}" berhasil ditambahkan dan disimpan ke database!`, 'success'))
+        .catch((err: any) => {
+          console.error(err);
+          showNotification('Gagal menyimpan ke database: ' + err.message, 'error');
+        });
     }
 
     setIsFormOpen(false);
@@ -730,7 +724,7 @@ export default function AdminDashboard() {
                         {order.cart.map((item, idx) => (
                           <div key={idx} className="flex items-center gap-3 p-3 bg-bg-light border border-stone-gray text-sm tracking-wider">
                             <div className="relative w-12 h-12 border border-stone-gray shrink-0">
-                              <Image src={item.image} alt={item.name} fill className="object-cover" referrerPolicy="no-referrer" />
+                              <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                             </div>
                             <div className="flex-1">
                               <p className="font-bold text-text-primary">{item.name}</p>
@@ -849,12 +843,10 @@ export default function AdminDashboard() {
                         <tr key={product.id} className="text-text-primary hover:hover:bg-bg-light transition-colors">
                           <td className="py-4">
                             <div className="relative w-12 h-12 bg-bg-panel border border-stone-gray overflow-hidden shrink-0">
-                              <Image
+                              <img
                                 src={product.image || 'https://picsum.photos/seed/default/400/400'}
                                 alt={product.name}
-                                fill
-                                className="object-cover"
-                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover"
                               />
                             </div>
                           </td>
@@ -1077,6 +1069,20 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-[10px] font-bold text-text-secondary mb-2 tracking-wider">
+                      Label Hero (Teks kecil di atas judul)
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={inputHeroLabel}
+                      onChange={(e) => setInputHeroLabel(e.target.value)}
+                      placeholder="Contoh: BEST SELLER"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-text-secondary mb-2 tracking-wider">
                       Judul Hero (Nama Produk Utama)
                     </label>
                     <input
@@ -1087,7 +1093,9 @@ export default function AdminDashboard() {
                       className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
                     />
                   </div>
+                </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-[10px] font-bold text-text-secondary mb-2 tracking-wider">
                       Harga (Rp)
@@ -1100,9 +1108,7 @@ export default function AdminDashboard() {
                       className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-[10px] font-bold text-text-secondary mb-2 tracking-wider">
                       Dimensi (Contoh: 12cm x 8cm x 4cm)
@@ -1166,12 +1172,10 @@ export default function AdminDashboard() {
                       {inputHeroImage ? (
                         <div className="flex flex-col sm:flex-row items-center gap-4 py-2 z-20 w-full justify-center">
                           <div className="relative w-16 h-16 border border-stone-gray overflow-hidden bg-bg-panel shrink-0">
-                            <Image
+                            <img
                               src={inputHeroImage}
                               alt="Pratinjau Unggahan Hero"
-                              fill
-                              className="object-cover"
-                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover"
                             />
                           </div>
                           <div className="text-left">
@@ -1315,12 +1319,10 @@ export default function AdminDashboard() {
                       {inputPreorderImage ? (
                         <div className="flex flex-col sm:flex-row items-center gap-4 py-2 z-20 w-full justify-center">
                           <div className="relative w-16 h-16 border border-stone-gray overflow-hidden bg-bg-panel shrink-0">
-                            <Image
+                            <img
                               src={inputPreorderImage}
                               alt="Pratinjau Unggahan Preorder"
-                              fill
-                              className="object-cover"
-                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover"
                             />
                           </div>
                           <div className="text-left">
@@ -1436,18 +1438,10 @@ export default function AdminDashboard() {
               {/* Save Controls */}
               <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4 pt-4 border-t border-stone-gray">
                 <button
-                  type="button"
-                  onClick={handleSaveDefaultsPermanently}
-                  className="minecraft-panel hover:bg-bg-surface text-xs tracking-wider font-bold py-3.5 px-6 tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-colors"
-                  title="Simpan pengaturan saat ini secara permanen ke dalam source code agar terbawa saat deploy."
-                >
-                  <Server className="w-4 h-4" /> Simpan Permanen (Deploy)
-                </button>
-                <button
                   type="submit"
                   className="minecraft-btn text-xs tracking-wider font-bold py-3.5 px-8 tracking-widest flex items-center justify-center gap-2"
                 >
-                  <Save className="w-4 h-4" /> Simpan Perubahan Brand
+                  <Server className="w-4 h-4" /> Simpan Perubahan ke Database
                 </button>
               </div>
             </form>
@@ -1565,12 +1559,10 @@ export default function AdminDashboard() {
                   {formFields.image ? (
                     <div className="flex flex-col sm:flex-row items-center gap-4 py-2 z-20">
                       <div className="relative w-16 h-16 border border-stone-700 overflow-hidden bg-bg-panel shrink-0">
-                        <Image
+                        <img
                           src={formFields.image}
                           alt="Pratinjau Unggahan"
-                          fill
-                          className="object-cover"
-                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="text-left">

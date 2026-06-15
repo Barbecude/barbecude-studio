@@ -1,4 +1,5 @@
 import type {NextConfig} from 'next';
+import path from 'path';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -8,6 +9,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  outputFileTracingRoot: path.resolve(process.cwd()),
   // Allow access to remote image placeholder.
   images: {
     remotePatterns: [

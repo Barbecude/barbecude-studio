@@ -132,7 +132,7 @@ export default function Home() {
           ) : (
             <div className="w-full h-full bg-muted" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-black/20 w-full" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/50 to-transparent w-full" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 flex flex-col items-start text-left">

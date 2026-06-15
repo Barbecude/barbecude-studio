@@ -23,7 +23,7 @@ export function ProductCard({ product, onBuyNow, onAddToCart, className = '', st
       </Link>
 
       <Link href={`/shop/${product.slug}`} className="block hover:text-brand-green transition-colors">
-        <h3 className="font-bold text-sm tracking-widest mb-1 leading-tight text-text-primary tracking-tight line-clamp-1">{product.name}</h3>
+        <h3 className="font-bold text-md tracking-widest mb-1 leading-tight text-text-primary tracking-tight line-clamp-1">{product.name}</h3>
       </Link>
       <div className="text-text-secondary text-sm tracking-wider mb-4 w-full">Rp {product.price.toLocaleString('id-ID')}</div>
 
