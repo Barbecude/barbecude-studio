@@ -359,14 +359,10 @@ export default function AdminDashboard() {
       showNotification('Berkas harus berupa gambar!', 'error');
       return;
     }
-    // No compression for hero image - use original quality
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        setInputHeroImage(e.target.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
+    // Use compression for hero image to prevent Supabase timeout (limit JSON payload size)
+    compressImageFile(file, (base64) => {
+      setInputHeroImage(base64);
+    });
   };
 
   const handleHeroDrop = (e: React.DragEvent) => {
@@ -400,14 +396,10 @@ export default function AdminDashboard() {
       showNotification('Berkas harus berupa gambar!', 'error');
       return;
     }
-    // No compression for preorder image - use original quality
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        setInputPreorderImage(e.target.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
+    // Use compression for preorder image to prevent Supabase timeout (limit JSON payload size)
+    compressImageFile(file, (base64) => {
+      setInputPreorderImage(base64);
+    });
   };
 
   const handlePreorderDrop = (e: React.DragEvent) => {
