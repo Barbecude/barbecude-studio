@@ -132,11 +132,11 @@ export default function Home() {
           ) : (
             <div className="w-full h-full bg-muted" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent w-full md:w-3/4" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-black/20 w-full" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 flex flex-col items-start text-left">
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.05] text-white drop-shadow-2xl">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.05] text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
             {(heroSettings.heroTitle || "")
               .split(" ")
               .map((word, i) => (
@@ -147,7 +147,7 @@ export default function Home() {
               ))}
           </h1>
 
-          <p className="text-base sm:text-lg text-gray-200 mb-10 leading-relaxed max-w-2xl drop-shadow-lg">
+          <p className="text-base sm:text-lg text-white font-medium mb-10 leading-relaxed max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-pre-wrap">
             {heroSettings.heroDescription}
           </p>
 
