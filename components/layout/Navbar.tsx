@@ -64,11 +64,11 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           {brandLogo ? (
-            <div className="relative w-10 h-10 rounded-none overflow-hidden border border-stone-gray transition-transform duration-300">
+            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-stone-gray transition-transform duration-300">
               <img src={brandLogo} alt="Brand Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
           ) : (
-            <div className="relative w-8 h-8 bg-primary rounded-none flex items-center justify-center transition-transform duration-300">
+            <div className="relative w-8 h-8 bg-primary rounded-full flex items-center justify-center transition-transform duration-300">
               <span className="text-white font-black text-sm select-none">
                 {brandName ? brandName.charAt(0).toUpperCase() : 'B'}
               </span>

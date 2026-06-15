@@ -10,21 +10,36 @@ export function AdminShortcut() {
   const [secret, setSecret] = useState('');
 
   useEffect(() => {
+    const keysDown = new Set<string>();
+    let recentKeys: string[] = [];
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isPrompting) return; // don't listen to shortcut if typing secret
+      if (isPrompting) return;
       
-      setKeys(prev => {
-        const newKeys = [...prev, e.key].slice(-2); // keep last 2
-        if (newKeys[0] === 'ArrowUp' && (newKeys[1] === 'u' || newKeys[1] === 'U')) {
-          setIsPrompting(true);
-          return []; // reset
-        }
-        return newKeys;
-      });
+      keysDown.add(e.key);
+      recentKeys.push(e.key);
+      if (recentKeys.length > 2) recentKeys.shift();
+
+      const isSimultaneous = keysDown.has('ArrowUp') && (keysDown.has('u') || keysDown.has('U'));
+      const isSequential = recentKeys[0] === 'ArrowUp' && (recentKeys[1] === 'u' || recentKeys[1] === 'U');
+
+      if (isSimultaneous || isSequential) {
+        setIsPrompting(true);
+        recentKeys = [];
+        keysDown.clear();
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      keysDown.delete(e.key);
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
   }, [isPrompting]);
 
   useEffect(() => {

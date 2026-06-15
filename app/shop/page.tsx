@@ -17,7 +17,7 @@ export default function ShopIndex() {
   const [activeCategory, setActiveCategory] = useState<string>('Semua');
   const [showToast, setShowToast] = useState(false);
 
-  const categories = ['Semua', 'Gantungan Kunci', 'Mob', 'Item', 'Flowers'];
+  const categories = ['Semua', 'Gantungan Kunci', 'Pajangan Meja', 'Hiasan Dinding'];
 
   const filteredProducts = activeCategory === 'Semua'
     ? products

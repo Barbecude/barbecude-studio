@@ -10,7 +10,7 @@ export interface Product {
   dimensions: string;
   material: string;
   stock: number; // 0 means Out of Stock (Kosong)
-  category: 'Gantungan Kunci' | 'Mob' | 'Item' | 'Flowers';
+  category: 'Gantungan Kunci' | 'Pajangan Meja' | 'Hiasan Dinding';
   cheapest: boolean;
   shopee_link?: string; // Link to Shopee product
 }

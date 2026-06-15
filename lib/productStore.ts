@@ -137,6 +137,18 @@ export const useProductStore = create<ProductState>()(
         try {
           const { data, error } = await supabase.from('store_config').select('config').eq('id', 1).single();
           if (!error && data?.config) {
+            // Category Migration
+            if (data.config.products) {
+              data.config.products = data.config.products.map((p: any) => {
+                if (p.category === 'Mob' || p.category === 'Item') {
+                  return { ...p, category: 'Pajangan Meja' };
+                }
+                if (p.category === 'Flowers') {
+                  return { ...p, category: 'Hiasan Dinding' };
+                }
+                return p;
+              });
+            }
             set((state) => ({ ...state, ...data.config }));
           }
         } catch (err) {

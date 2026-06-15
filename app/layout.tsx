@@ -21,7 +21,10 @@ export const metadata: Metadata = {
   description: 'Craft. Host. Play. — all in one world.',
 };
 
-export default async function RootLayout({children}: {children: React.ReactNode}) {
+import { Suspense } from 'react';
+import { RootSkeleton } from '@/components/RootSkeleton';
+
+async function AppShell({ children }: { children: React.ReactNode }) {
   let config = null;
   try {
     const { data } = await supabase.from('store_config').select('config').eq('id', 1).single();
@@ -31,16 +34,26 @@ export default async function RootLayout({children}: {children: React.ReactNode}
   }
 
   return (
+    <>
+      <StoreHydrator config={config} />
+      <AdminShortcut />
+      <Navbar />
+      <main className="flex-1">
+        {children}
+      </main>
+      <Footer />
+    </>
+  );
+}
+
+export default function RootLayout({children}: {children: React.ReactNode}) {
+  return (
     <html lang="en" className={cn("font-sans", geist.variable, "dark")} style={{ colorScheme: 'dark' }}>
       <body className="font-sans min-h-screen flex flex-col" suppressHydrationWarning>
         <DynamicFavicon />
-        <StoreHydrator config={config} />
-        <AdminShortcut />
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <Suspense fallback={<RootSkeleton />}>
+          <AppShell>{children}</AppShell>
+        </Suspense>
       </body>
     </html>
   );

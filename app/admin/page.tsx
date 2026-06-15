@@ -92,7 +92,7 @@ export default function AdminDashboard() {
     dimensions: '',
     material: '',
     stock: 1,
-    category: 'Mob' as 'Gantungan Kunci' | 'Mob' | 'Item' | 'Flowers',
+    category: 'Gantungan Kunci' as 'Gantungan Kunci' | 'Pajangan Meja' | 'Hiasan Dinding',
     cheapest: false,
     shopee_link: ''
   });
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
       dimensions: '',
       material: '',
       stock: 1,
-      category: 'Mob',
+      category: 'Gantungan Kunci',
       cheapest: false,
       shopee_link: ''
     });
@@ -804,10 +804,9 @@ export default function AdminDashboard() {
                   className="w-full bg-bg-surface border border-stone-gray text-text-primary px-4 py-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                 >
                   <option value="Semua">Semua Kategori</option>
-                  <option value="Mob">Mob</option>
                   <option value="Gantungan Kunci">Gantungan Kunci</option>
-                  <option value="Item">Item</option>
-                  <option value="Flowers">Flowers</option>
+                  <option value="Pajangan Meja">Pajangan Meja</option>
+                  <option value="Hiasan Dinding">Hiasan Dinding</option>
                 </select>
               </div>
 
@@ -1507,10 +1506,9 @@ export default function AdminDashboard() {
                     onChange={(e) => setFormFields({ ...formFields, category: e.target.value as any })}
                     className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                   >
-                    <option value="Mob">Mob</option>
                     <option value="Gantungan Kunci">Gantungan Kunci</option>
-                    <option value="Item">Item</option>
-                    <option value="Flowers">Flowers</option>
+                    <option value="Pajangan Meja">Pajangan Meja</option>
+                    <option value="Hiasan Dinding">Hiasan Dinding</option>
                   </select>
                 </div>
 
