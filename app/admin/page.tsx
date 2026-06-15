@@ -86,7 +86,7 @@ export default function AdminDashboard() {
     description: 'Dibuat dari blok kayu yang dicat akrilik, ditempel satu per satu dengan kuat, lalu difinishing pernis mengkilap.',
     dimensions: '',
     material: '',
-    stock: 0,
+    stock: 1,
     category: 'Mob' as 'Gantungan Kunci' | 'Mob' | 'Item' | 'Flowers',
     cheapest: false,
     shopee_link: ''
@@ -276,7 +276,7 @@ export default function AdminDashboard() {
       description: 'Dibuat dari blok kayu yang dicat akrilik, ditempel satu per satu dengan kuat, lalu difinishing pernis mengkilap.',
       dimensions: '',
       material: '',
-      stock: 0,
+      stock: 1,
       category: 'Mob',
       cheapest: false,
       shopee_link: ''
