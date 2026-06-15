@@ -139,8 +139,9 @@ export default function AdminDashboard() {
   const [inputHeroDimensions, setInputHeroDimensions] = useState(storeHeroDimensions);
   const [inputHeroLinkSlug, setInputHeroLinkSlug] = useState(storeHeroLinkSlug);
   const [heroImageMode, setHeroImageMode] = useState<'upload' | 'gallery'>(() => {
-    return (storeHeroImage === '/images/hero-section.png' || storeHeroImage === '/images/panda.png') ? 'gallery' : 'upload';
+    return (storeHeroImage?.startsWith('/images/')) ? 'gallery' : 'upload';
   });
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
 
   const [inputPreorderTitle, setInputPreorderTitle] = useState(storePreorderTitle);
   const [inputPreorderDescription, setInputPreorderDescription] = useState(storePreorderDescription);
@@ -148,6 +149,17 @@ export default function AdminDashboard() {
   const [inputPreorderImage, setInputPreorderImage] = useState(storePreorderImage);
 
   const [isDraggingPreorder, setIsDraggingPreorder] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/gallery')
+      .then(res => res.json())
+      .then(data => {
+        if (data.images) {
+          setGalleryImages(data.images);
+        }
+      })
+      .catch(err => console.error('Failed to load gallery images:', err));
+  }, []);
 
   useEffect(() => {
     setInputBrandName(storeBrandName);
@@ -182,7 +194,7 @@ export default function AdminDashboard() {
     setInputHeroTitle(storeHeroTitle);
     setInputHeroDescription(storeHeroDescription);
     setInputHeroImage(storeHeroImage);
-    setHeroImageMode((storeHeroImage === '/images/hero-section.png' || storeHeroImage === '/images/panda.png') ? 'gallery' : 'upload');
+    setHeroImageMode(storeHeroImage?.startsWith('/images/') ? 'gallery' : 'upload');
     setInputHeroPrice(storeHeroPrice);
     setInputHeroDimensions(storeHeroDimensions);
     setInputHeroLinkSlug(storeHeroLinkSlug);
@@ -1162,25 +1174,32 @@ export default function AdminDashboard() {
                     </div>
 
                     {heroImageMode === 'gallery' ? (
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <div
-                          onClick={() => setInputHeroImage('/images/hero-section.png')}
-                          className={`relative cursor-pointer border-2 transition-all p-1 ${inputHeroImage === '/images/hero-section.png' ? 'border-primary' : 'border-stone-gray hover:border-primary/50'}`}
-                        >
-                          <img src="/images/hero-section.png" alt="Hero 1" className="w-full h-24 object-cover" />
-                          {inputHeroImage === '/images/hero-section.png' && (
-                            <div className="absolute top-2 right-2 bg-primary text-bg-dark rounded-full p-0.5"><CheckCircle className="w-4 h-4" /></div>
-                          )}
-                        </div>
-                        <div
-                          onClick={() => setInputHeroImage('/images/panda.png')}
-                          className={`relative cursor-pointer border-2 transition-all p-1 ${inputHeroImage === '/images/panda.png' ? 'border-primary' : 'border-stone-gray hover:border-primary/50'}`}
-                        >
-                          <img src="/images/panda.png" alt="Panda" className="w-full h-24 object-cover" />
-                          {inputHeroImage === '/images/panda.png' && (
-                            <div className="absolute top-2 right-2 bg-primary text-bg-dark rounded-full p-0.5"><CheckCircle className="w-4 h-4" /></div>
-                          )}
-                        </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                        {galleryImages.length > 0 ? (
+                          galleryImages.map((imgUrl, index) => {
+                            // Strip query param for comparison
+                            const baseUrl = imgUrl.split('?')[0];
+                            const inputBaseUrl = inputHeroImage?.split('?')[0];
+                            const isSelected = inputBaseUrl === baseUrl;
+
+                            return (
+                              <div
+                                key={index}
+                                onClick={() => setInputHeroImage(imgUrl)}
+                                className={`relative cursor-pointer border-2 transition-all p-1 ${isSelected ? 'border-primary' : 'border-stone-gray hover:border-primary/50'}`}
+                              >
+                                <img src={imgUrl} alt={`Gallery Image ${index + 1}`} className="w-full h-24 object-cover" />
+                                {isSelected && (
+                                  <div className="absolute top-2 right-2 bg-primary text-bg-dark rounded-full p-0.5"><CheckCircle className="w-4 h-4" /></div>
+                                )}
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div className="col-span-2 sm:col-span-3 text-center p-4 border border-dashed border-stone-gray text-text-secondary text-xs">
+                            Belum ada gambar di galeri (folder assets/.aistudio/image/)
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <>
