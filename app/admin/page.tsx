@@ -1139,73 +1139,34 @@ export default function AdminDashboard() {
                       Gambar Hero
                     </label>
 
-                    {/* Drag-and-drop zone container */}
+                    {/* Drag-and-drop zone container (DISABLED) */}
                     <div
-                      onDragOver={handleHeroDragOver}
-                      onDragLeave={handleHeroDragLeave}
-                      onDrop={handleHeroDrop}
-                      className={`border-2 border-dashed p-4 text-center cursor-pointer relative transition-all duration-200 flex flex-col items-center justify-center min-h-[140px] mb-4
-                        ${isDraggingHero
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-stone-gray bg-bg-panel hover:border-primary/45 text-text-secondary hover:text-text-primary'}`}
+                      className="border-2 border-dashed p-4 text-center relative flex flex-col items-center justify-center min-h-[140px] mb-4 border-stone-gray bg-bg-panel text-text-secondary opacity-50 cursor-not-allowed"
                     >
                       <input
                         type="file"
                         id="hero-image-uploader"
                         accept="image/*"
-                        onChange={handleHeroFileSelect}
+                        disabled
                         className="hidden"
                       />
 
-                      {/* Clicking triggers file input selection */}
-                      <label htmlFor="hero-image-uploader" className="absolute inset-0 cursor-pointer w-full h-full z-10" />
-
-                      {inputHeroImage ? (
-                        <div className="flex flex-col sm:flex-row items-center gap-4 py-2 z-20 w-full justify-center">
-                          <div className="relative w-16 h-16 border border-stone-gray overflow-hidden bg-bg-panel shrink-0">
-                            <img
-                              src={inputHeroImage}
-                              alt="Pratinjau Unggahan Hero"
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="text-left">
-                            <div className="text-xs tracking-wider font-bold text-primary flex items-center gap-1">
-                              <CheckCircle className="w-3 h-3" /> Berhasil Diimpor
-                            </div>
-                            <p className="text-[10px] text-text-secondary max-w-[200px] sm:max-w-[280px] truncate">{inputHeroImage}</p>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setInputHeroImage('');
-                              }}
-                              className="text-[10px] text-red-400 font-bold underline hover:text-red-300 mt-1 cursor-pointer z-30 relative"
-                            >
-                              Hapus Gambar
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-2 select-none pointer-events-none">
-                          <Upload className="w-8 h-8 opacity-60 text-primary" />
-                          <p className="text-xs tracking-wider font-bold text-text-primary tracking-wider">Tarik &amp; Lepas gambar di sini</p>
-                          <p className="text-[10px] text-text-secondary">atau klik area ini untuk memilih berkas gambar lokal</p>
-                        </div>
-                      )}
+                      <div className="flex flex-col items-center gap-2 select-none pointer-events-none">
+                        <Upload className="w-8 h-8 opacity-40 text-primary" />
+                        <p className="text-xs tracking-wider font-bold text-text-primary tracking-wider">Upload Dinonaktifkan</p>
+                        <p className="text-[10px] text-text-secondary">Gambar hero dikunci ke mode statis</p>
+                      </div>
                     </div>
 
-                    <div className="mt-2 text-left z-20 relative">
+                    <div className="mt-2 text-left z-20 relative opacity-50 cursor-not-allowed">
                       <label className="block text-[10px] font-bold text-text-secondary mb-1">
-                        Atau tempel Link URL Gambar Manual:
+                        Atau tempel Link URL Gambar Manual (Dikunci):
                       </label>
                       <input
                         type="text"
-                        value={inputHeroImage}
-                        onChange={(e) => setInputHeroImage(e.target.value)}
-                        placeholder="https://picsum.photos/seed/.../800/800"
-                        className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
+                        value="/images/hero-section.png"
+                        disabled
+                        className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:outline-none rounded-none cursor-not-allowed"
                       />
                     </div>
                   </div>
