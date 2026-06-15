@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const sourceDir = path.join(process.cwd(), 'assets', '.aistudio', 'image');
@@ -12,27 +14,32 @@ export async function GET() {
       fs.mkdirSync(targetDir, { recursive: true });
     }
 
-    // Check if source dir exists
-    if (!fs.existsSync(sourceDir)) {
-      return NextResponse.json({ images: [] });
+    // If source dir exists (local environment), sync files to target
+    if (fs.existsSync(sourceDir)) {
+      const sourceFiles = fs.readdirSync(sourceDir);
+      for (const file of sourceFiles) {
+        if (file.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+          const sourcePath = path.join(sourceDir, file);
+          const targetPath = path.join(targetDir, file);
+          try {
+            fs.copyFileSync(sourcePath, targetPath);
+          } catch (e) {
+            console.error(`Failed to copy ${file}:`, e);
+          }
+        }
+      }
     }
 
-    // Read all files in source dir
-    const files = fs.readdirSync(sourceDir);
+    // Now always read from target dir (public/images) which works on both local and Vercel
     const images: string[] = [];
-
-    for (const file of files) {
-      // Check if it's an image file
-      if (file.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
-        const sourcePath = path.join(sourceDir, file);
-        const targetPath = path.join(targetDir, file);
-
-        // Always copy to make sure it's up to date
-        fs.copyFileSync(sourcePath, targetPath);
-        
-        // Add a timestamp to bypass browser cache
-        const stats = fs.statSync(sourcePath);
-        images.push(`/images/${file}?v=${stats.mtimeMs}`);
+    if (fs.existsSync(targetDir)) {
+      const files = fs.readdirSync(targetDir);
+      for (const file of files) {
+        if (file.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+          const targetPath = path.join(targetDir, file);
+          const stats = fs.statSync(targetPath);
+          images.push(`/images/${file}?v=${stats.mtimeMs}`);
+        }
       }
     }
 
