@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       </Link>
 
       <div className="flex items-center gap-4 mb-8 pb-4 border-b border-stone-gray">
-        <Eye className="w-10 h-10 text-brand-green" />
+        <Eye className="w-10 h-10 text-primary" />
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Kebijakan Privasi</h1>
           <p className="text-xs tracking-wider text-text-secondary">Pembaruan Terakhir: {new Date().toLocaleDateString('id-ID')}</p>

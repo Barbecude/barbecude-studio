@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function RefundPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-16 text-left animate-fade-in">
-      <Link href="/legal" className="text-brand-green text-sm tracking-widest font-bold mb-6 inline-block hover:brightness-110">
+      <Link href="/legal" className="text-primary text-sm tracking-widest font-bold mb-6 inline-block hover:brightness-110">
         &larr; Kembali ke Informasi Sistemrmasi Legal
       </Link>
       <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-8 text-text-primary">

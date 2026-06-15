@@ -68,14 +68,14 @@ export function Navbar() {
               <img src={brandLogo} alt="Brand Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
           ) : (
-            <div className="relative w-8 h-8 bg-brand-green rounded-none flex items-center justify-center transition-transform duration-300">
+            <div className="relative w-8 h-8 bg-primary rounded-none flex items-center justify-center transition-transform duration-300">
               <span className="text-white font-black text-sm select-none">
                 {brandName ? brandName.charAt(0).toUpperCase() : 'B'}
               </span>
             </div>
           )}
           <div className="flex flex-col text-left leading-tight">
-            <span className="font-bold tracking-tight text-sm md:text-base text-text-primary group-hover:text-brand-green transition-colors duration-200">
+            <span className="font-bold tracking-tight text-sm md:text-base text-text-primary group-hover:text-primary transition-colors duration-200">
               {brandName}
             </span>
             {brandSubtitle && (
@@ -94,7 +94,7 @@ export function Navbar() {
           >
             <div className={`py-1 flex items-center gap-2 transition-all ${
               pathname === '/' || pathname.startsWith('/shop')
-                ? 'text-brand-green border-b-2 border-brand-green'
+                ? 'text-primary border-b-2 border-primary'
                 : 'text-text-secondary border-b-2 border-transparent group-hover:text-text-primary group-hover:border-stone-gray'
             }`}>
               <Box className="w-4 h-4" /> Toko
@@ -141,7 +141,7 @@ export function Navbar() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`px-4 py-3 transition-all flex items-center gap-2 rounded-none ${
                   pathname === '/' || pathname.startsWith('/shop')
-                    ? 'bg-bg-panel text-brand-green border-l-2 border-brand-green'
+                    ? 'bg-bg-panel text-primary border-l-2 border-primary'
                     : 'text-text-secondary hover:bg-bg-panel hover:text-text-primary border-l-2 border-transparent'
                 }`}
               >

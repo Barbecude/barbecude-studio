@@ -153,7 +153,7 @@ export function LocationPicker({ onLocationSelect }: LocationPickerProps) {
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center h-[300px] bg-bg-panel border border-stone-gray">
-        <Loader2 className="w-6 h-6 animate-spin text-brand-green" />
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -168,7 +168,7 @@ export function LocationPicker({ onLocationSelect }: LocationPickerProps) {
           type="button"
           onClick={getCurrentLocation}
           disabled={isLoadingLocation}
-          className="text-xs tracking-wider font-bold text-brand-green hover:text-brand-green/80 flex items-center gap-2 border-0 bg-transparent cursor-pointer disabled:opacity-50"
+          className="text-xs tracking-wider font-bold text-primary hover:text-primary/80 flex items-center gap-2 border-0 bg-transparent cursor-pointer disabled:opacity-50"
         >
           {isLoadingLocation ? (
             <>

@@ -28,10 +28,10 @@ export function CustomSelect({ options, value, onChange, placeholder, required }
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full bg-bg-panel border text-left p-3 text-xs tracking-wider focus:outline-none rounded-none flex items-center justify-between transition-colors ${isOpen ?'border-brand-green' : 'border-stone-gray'} ${value ? 'text-text-primary' : 'text-text-secondary'}`}
+        className={`w-full bg-bg-panel border text-left p-3 text-xs tracking-wider focus:outline-none rounded-none flex items-center justify-between transition-colors ${isOpen ?'border-primary' : 'border-stone-gray'} ${value ? 'text-text-primary' : 'text-text-secondary'}`}
       >
         <span className="truncate">{value || placeholder}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ?'rotate-180 text-brand-green' : 'text-text-secondary'}`} />
+        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ?'rotate-180 text-primary' : 'text-text-secondary'}`} />
       </button>
       
       {/* Required hidden input to satisfy form validation if needed */}
@@ -44,7 +44,7 @@ export function CustomSelect({ options, value, onChange, placeholder, required }
           {options.map((option) => (
             <div
               key={option}
-              className={`p-3 text-xs tracking-wider cursor-pointer hover:bg-bg-panel transition-colors flex items-center justify-between ${value === option ?'text-brand-green font-bold bg-bg-panel/50' : 'text-text-primary'}`}
+              className={`p-3 text-xs tracking-wider cursor-pointer hover:bg-bg-panel transition-colors flex items-center justify-between ${value === option ?'text-primary font-bold bg-bg-panel/50' : 'text-text-primary'}`}
               onClick={() => {
                 onChange(option);
                 setIsOpen(false);

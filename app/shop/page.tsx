@@ -62,8 +62,8 @@ export default function ShopIndex() {
                 onClick={() => setActiveCategory(cat)}
                 className={`px-5 py-2.5 bg-bg-surface border font-bold whitespace-nowrap text-xs  tracking-wider  tracking-wider rounded-none transition-all cursor-pointer
                     ${cat === activeCategory
-                    ? 'border-brand-green text-brand-green'
-                    : 'border-stone-gray text-text-secondary hover:text-text-primary hover:border-brand-green'}`}
+                    ? 'border-primary text-primary'
+                    : 'border-stone-gray text-text-secondary hover:text-text-primary hover:border-primary'}`}
               >
                 {cat}
               </button>
@@ -73,8 +73,8 @@ export default function ShopIndex() {
 
         {/* Dynamic Success toast notification for cart */}
         {showToast && (
-          <div className="fixed bottom-6 right-6 z-50 bg-bg-surface border-2 border-brand-green p-4 font-bold text-xs tracking-wider tracking-wider text-text-primary shadow-2xl flex items-center gap-3 animate-fade-in">
-            <span className="text-brand-green">✦</span> Berhasil ditambahkan ke keranjang!
+          <div className="fixed bottom-6 right-6 z-50 bg-bg-surface border-2 border-primary p-4 font-bold text-xs tracking-wider tracking-wider text-text-primary shadow-2xl flex items-center gap-3 animate-fade-in">
+            <span className="text-primary">✦</span> Berhasil ditambahkan ke keranjang!
           </div>
         )}
 

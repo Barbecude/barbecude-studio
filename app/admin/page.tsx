@@ -545,13 +545,13 @@ export default function AdminDashboard() {
       {notification && (
         <div className="fixed top-6 right-6 z-50 animate-bounce">
           <div className={`minecraft-panel bg-bg-panel border-2 p-4 shadow-2xl flex items-center gap-3
-            ${notification.type === 'error' ? 'border-red-500/70' : notification.type === 'info' ? 'border-amber-500/70' : 'border-brand-green/70'}`}>
+            ${notification.type === 'error' ? 'border-red-500/70' : notification.type === 'info' ? 'border-amber-500/70' : 'border-primary/70'}`}>
             {notification.type === 'error' ? (
               <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
             ) : notification.type === 'info' ? (
               <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
             ) : (
-              <CheckCircle className="w-5 h-5 text-brand-green shrink-0" />
+              <CheckCircle className="w-5 h-5 text-primary shrink-0" />
             )}
             <span className="text-sm tracking-widest font-bold text-text-primary tracking-wide">{notification.message}</span>
           </div>
@@ -568,40 +568,40 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('orders')}
             className={`p-3 rounded-none text-left flex items-center gap-3 font-bold text-xs tracking-wider transition-all border border-transparent cursor-pointer
               ${activeTab === 'orders'
-                ? 'bg-wood-dark/20 text-brand-green border-brand-green/30 font-extrabold'
+                ? 'bg-wood-dark/20 text-primary border-primary/30 font-extrabold'
                 : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'}`}
           >
-            <ShoppingBag className="w-4 h-4 text-brand-green" /> Kelola Pesanan
+            <ShoppingBag className="w-4 h-4 text-primary" /> Kelola Pesanan
           </button>
 
           <button
             onClick={() => setActiveTab('shop')}
             className={`p-3 rounded-none text-left flex items-center gap-3 font-bold text-xs  tracking-wider  tracking-wider transition-all border border-transparent cursor-pointer
               ${activeTab === 'shop'
-                ? 'bg-wood-dark/20 text-brand-green border-brand-green/30 font-extrabold'
+                ? 'bg-wood-dark/20 text-primary border-primary/30 font-extrabold'
                 : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'}`}
           >
-            <Hammer className="w-4 h-4 text-brand-green" /> Kelola Produk
+            <Hammer className="w-4 h-4 text-primary" /> Kelola Produk
           </button>
 
           <button
             onClick={() => setActiveTab('overview')}
             className={`p-3 rounded-none text-left flex items-center gap-3 font-bold text-xs  tracking-wider  tracking-wider transition-all border border-transparent cursor-pointer
               ${activeTab === 'overview'
-                ? 'bg-wood-dark/20 text-brand-green border-brand-green/30 font-extrabold'
+                ? 'bg-wood-dark/20 text-primary border-primary/30 font-extrabold'
                 : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'}`}
           >
-            <LayoutDashboard className="w-4 h-4 text-brand-green" /> Overview Statistik
+            <LayoutDashboard className="w-4 h-4 text-primary" /> Overview Statistik
           </button>
 
           <button
             onClick={() => setActiveTab('brand')}
             className={`p-3 rounded-none text-left flex items-center gap-3 font-bold text-xs  tracking-wider  tracking-wider transition-all border border-transparent cursor-pointer
               ${activeTab === 'brand'
-                ? 'bg-wood-dark/20 text-brand-green border-brand-green/30 font-extrabold'
+                ? 'bg-wood-dark/20 text-primary border-primary/30 font-extrabold'
                 : 'text-text-secondary hover:bg-bg-primary hover:text-text-primary'}`}
           >
-            <Settings className="w-4 h-4 text-brand-green" /> Pengaturan Brand
+            <Settings className="w-4 h-4 text-primary" /> Pengaturan Brand
           </button>
 
           <button
@@ -620,7 +620,7 @@ export default function AdminDashboard() {
         </nav>
 
         <div className="p-4 border-t border-stone-gray text-[10px] text-text-secondary tracking-wider">
-          SYSTEM STATUS: <span className="text-brand-green font-bold">ONLINE</span>
+          SYSTEM STATUS: <span className="text-primary font-bold">ONLINE</span>
         </div>
       </aside>
 
@@ -632,12 +632,12 @@ export default function AdminDashboard() {
           <div className="animate-fade-in text-left">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 pb-4 border-b border-stone-gray">
               <div>
-                <span className="text-brand-green text-xs tracking-wider font-bold tracking-widest block mb-1">MANAJEMEN PESANAN</span>
+                <span className="text-primary text-xs tracking-wider font-bold tracking-widest block mb-1">MANAJEMEN PESANAN</span>
                 <h1 className="font-extrabold text-3xl text-text-primary tracking-tight">Order Management</h1>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-xs tracking-wider text-text-secondary">
-                  Total Pesanan: <strong className="text-brand-green">{orders.length}</strong>
+                  Total Pesanan: <strong className="text-primary">{orders.length}</strong>
                 </span>
               </div>
             </div>
@@ -673,7 +673,7 @@ export default function AdminDashboard() {
                             updateOrderStatus(order.orderId, e.target.value as OrderStatus);
                             showNotification(`Status pesanan ${order.orderId} diubah menjadi ${e.target.value}`, 'success');
                           }}
-                          className="bg-bg-panel border-2 border-stone-gray text-text-primary px-4 py-2 text-xs tracking-wider font-bold focus:border-brand-green focus:outline-none rounded-none"
+                          className="bg-bg-panel border-2 border-stone-gray text-text-primary px-4 py-2 text-xs tracking-wider font-bold focus:border-primary focus:outline-none rounded-none"
                         >
                           <option value="pending">⏳ Menunggu Konfirmasi</option>
                           <option value="confirmed">✅ Dikonfirmasi</option>
@@ -683,7 +683,7 @@ export default function AdminDashboard() {
                           <option value="cancelled">❌ Dibatalkan</option>
                         </select>
                         <span className={`text-xs tracking-wider font-bold text-center px-3 py-1.5 border-2
-                          ${order.status === 'delivered' ? 'border-brand-green text-brand-green bg-brand-green/10' :
+                          ${order.status === 'delivered' ? 'border-primary text-primary bg-primary/10' :
                             order.status === 'cancelled' ? 'border-red-500 text-red-500 bg-red-500/10' :
                               order.status === 'shipped' ? 'border-orange-500 text-orange-500 bg-orange-500/10' :
                                 'border-yellow-500 text-yellow-500 bg-yellow-500/10'}`}>
@@ -730,7 +730,7 @@ export default function AdminDashboard() {
                               <p className="font-bold text-text-primary">{item.name}</p>
                               <p className="text-xs text-text-secondary">x{item.qty} @ Rp {item.price.toLocaleString('id-ID')}</p>
                             </div>
-                            <p className="font-bold text-brand-green">
+                            <p className="font-bold text-primary">
                               Rp {(item.price * item.qty).toLocaleString('id-ID')}
                             </p>
                           </div>
@@ -745,7 +745,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-text-secondary tracking-wider">TOTAL PEMBAYARAN</p>
-                        <p className="text-2xl font-bold text-brand-green tracking-wider">
+                        <p className="text-2xl font-bold text-primary tracking-wider">
                           Rp {order.total.toLocaleString('id-ID')}
                         </p>
                       </div>
@@ -762,7 +762,7 @@ export default function AdminDashboard() {
           <div className="animate-fade-in text-left">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 pb-4 border-b border-stone-gray">
               <div>
-                <span className="text-brand-green text-xs tracking-wider font-bold tracking-widest block mb-1">DATA PRODUK</span>
+                <span className="text-primary text-xs tracking-wider font-bold tracking-widest block mb-1">DATA PRODUK</span>
                 <h1 className="font-extrabold text-3xl text-text-primary tracking-tight">Voxelwood Management</h1>
               </div>
               <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -775,7 +775,7 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   onClick={handleOpenAdd}
-                  className="minecraft-btn text-xs tracking-wider py-2.5 px-5 font-bold flex items-center gap-2 tracking-wider bg-brand-green hover:brightness-110 text-text-primary rounded-none cursor-pointer"
+                  className="minecraft-btn text-xs tracking-wider py-2.5 px-5 font-bold flex items-center gap-2 tracking-wider bg-primary hover:brightness-110 text-text-primary rounded-none cursor-pointer"
                 >
                   <Plus className="w-4 h-4" /> Tambah Produk
                 </button>
@@ -792,7 +792,7 @@ export default function AdminDashboard() {
                   placeholder="Cari nama produk, slug..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-bg-surface border border-stone-gray text-text-primary placeholder:text-stone-500 pl-10 pr-4 py-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                  className="w-full bg-bg-surface border border-stone-gray text-text-primary placeholder:text-stone-500 pl-10 pr-4 py-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                 />
               </div>
 
@@ -801,7 +801,7 @@ export default function AdminDashboard() {
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  className="w-full bg-bg-surface border border-stone-gray text-text-primary px-4 py-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                  className="w-full bg-bg-surface border border-stone-gray text-text-primary px-4 py-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                 >
                   <option value="Semua">Semua Kategori</option>
                   <option value="Mob">Mob</option>
@@ -866,7 +866,7 @@ export default function AdminDashboard() {
                               {product.category}
                             </span>
                           </td>
-                          <td className="py-4 text-xs tracking-wider font-bold text-brand-green">
+                          <td className="py-4 text-xs tracking-wider font-bold text-primary">
                             Rp {product.price.toLocaleString('id-ID')}
                           </td>
                           <td className="py-4 text-xs tracking-wider font-bold">
@@ -875,7 +875,7 @@ export default function AdminDashboard() {
                                 HABIS
                               </span>
                             ) : (
-                              <span className="px-2.5 py-1 text-[10px] tracking-wider font-extrabold border bg-brand-green/20 text-brand-green border-brand-green">
+                              <span className="px-2.5 py-1 text-[10px] tracking-wider font-extrabold border bg-primary/20 text-primary border-primary">
                                 STOK: {product.stock}
                               </span>
                             )}
@@ -884,7 +884,7 @@ export default function AdminDashboard() {
                             <div className="flex justify-end gap-2">
                               <button
                                 onClick={() => handleOpenEdit(product)}
-                                className="p-2 border border-stone-gray hover:border-brand-green hover:text-brand-green text-text-secondary transition-colors cursor-pointer"
+                                className="p-2 border border-stone-gray hover:border-primary hover:text-primary text-text-secondary transition-colors cursor-pointer"
                                 title="Edit Produk"
                               >
                                 <Pencil className="w-4 h-4" />
@@ -913,7 +913,7 @@ export default function AdminDashboard() {
           <div className="animate-fade-in text-left">
             <div className="flex justify-between items-center mb-8 pb-4 border-b border-stone-gray">
               <div>
-                <span className="text-brand-green text-xs tracking-wider font-bold tracking-widest block mb-1">METRIKS</span>
+                <span className="text-primary text-xs tracking-wider font-bold tracking-widest block mb-1">METRIKS</span>
                 <h1 className="font-extrabold text-3xl text-text-primary tracking-tight">Dashboard Overview</h1>
               </div>
             </div>
@@ -923,9 +923,9 @@ export default function AdminDashboard() {
                 <div className="text-text-secondary text-xs tracking-wider font-extrabold tracking-wider mb-2">Total Katalog Produk</div>
                 <div className="text-3xl text-text-primary font-bold">{products.length}</div>
               </div>
-              <div className="minecraft-panel p-6 bg-brand-green/10 border-brand-green/30 text-left">
+              <div className="minecraft-panel p-6 bg-primary/10 border-primary/30 text-left">
                 <div className="text-text-secondary text-xs tracking-wider font-extrabold tracking-wider mb-2">Nilai Kumulatif Katalog</div>
-                <div className="text-xl text-brand-green font-bold">Rp {totalCatalogValue.toLocaleString('id-ID')}</div>
+                <div className="text-xl text-primary font-bold">Rp {totalCatalogValue.toLocaleString('id-ID')}</div>
               </div>
               <div className="minecraft-panel p-6 bg-bg-panel border-red-500/20 text-left">
                 <div className="text-text-secondary text-xs tracking-wider font-extrabold tracking-wider mb-2">Produk Habis</div>
@@ -949,24 +949,24 @@ export default function AdminDashboard() {
                 <tbody className="divide-y divide-stone-800/30 text-xs tracking-wider">
                   <tr className="text-text-primary">
                     <td className="py-3">#TRX-V9012</td>
-                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-brand-green text-brand-green">E-Commerce</span></td>
+                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-primary text-primary">E-Commerce</span></td>
                     <td className="py-3 font-bold">Alex Doe</td>
                     <td className="py-3">Rp 150.000</td>
-                    <td className="py-3"><span className="text-brand-green text-[10px] font-bold">Lunas</span></td>
+                    <td className="py-3"><span className="text-primary text-[10px] font-bold">Lunas</span></td>
                   </tr>
                   <tr className="text-text-primary">
                     <td className="py-3">#TRX-V9011</td>
-                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-brand-green text-brand-green">E-Commerce</span></td>
+                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-primary text-primary">E-Commerce</span></td>
                     <td className="py-3 font-bold">Sarah Lee</td>
                     <td className="py-3">Rp 350.000</td>
                     <td className="py-3"><span className="text-yellow-400 text-[10px] font-bold">Diproses</span></td>
                   </tr>
                   <tr className="text-text-primary">
                     <td className="py-3">#TRX-V9010</td>
-                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-brand-green text-brand-green">E-Commerce</span></td>
+                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-primary text-primary">E-Commerce</span></td>
                     <td className="py-3 font-bold">Mike R.</td>
                     <td className="py-3">Rp 45.000</td>
-                    <td className="py-3"><span className="text-brand-green text-[10px] font-bold">Lunas</span></td>
+                    <td className="py-3"><span className="text-primary text-[10px] font-bold">Lunas</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -991,7 +991,7 @@ export default function AdminDashboard() {
             <form onSubmit={handleSaveBrandSettings} className="space-y-8 max-w-4xl">
               {/* Sekilas Brand */}
               <div className="minecraft-panel p-6 bg-bg-panel border border-stone-gray space-y-6">
-                <h3 className="text-sm tracking-widest font-bold tracking-widest text-brand-green border-b border-stone-gray pb-2 mb-4">
+                <h3 className="text-sm tracking-widest font-bold tracking-widest text-primary border-b border-stone-gray pb-2 mb-4">
                   1. Identitas Visual & Footer
                 </h3>
 
@@ -1005,7 +1005,7 @@ export default function AdminDashboard() {
                       required
                       value={inputBrandName}
                       onChange={(e) => setInputBrandName(e.target.value)}
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     />
                   </div>
 
@@ -1018,7 +1018,7 @@ export default function AdminDashboard() {
                       value={inputBrandSubtitle}
                       onChange={(e) => setInputBrandSubtitle(e.target.value)}
                       placeholder="Contoh: STUDIO"
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     />
                   </div>
                 </div>
@@ -1033,12 +1033,12 @@ export default function AdminDashboard() {
                       value={inputBrandLogo}
                       onChange={(e) => setInputBrandLogo(e.target.value)}
                       placeholder="URL Gambar"
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                     />
                     {inputBrandLogo && (
                       <div className="mt-4 flex items-center gap-4">
                         <span className="text-[10px] text-text-secondary tracking-widest font-bold">Preview:</span>
-                        <div className="w-12 h-12 rounded-full overflow-hidden border border-brand-green">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border border-primary">
                           <img src={inputBrandLogo} alt="Logo" className="w-full h-full object-cover" />
                         </div>
                       </div>
@@ -1054,7 +1054,7 @@ export default function AdminDashboard() {
                       required
                       value={inputBrandDesc}
                       onChange={(e) => setInputBrandDesc(e.target.value)}
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none leading-relaxed resize-none"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none leading-relaxed resize-none"
                     />
                   </div>
                 </div>
@@ -1062,7 +1062,7 @@ export default function AdminDashboard() {
 
               {/* Pengaturan Hero Section */}
               <div className="minecraft-panel p-6 bg-bg-panel border border-stone-gray space-y-6">
-                <h3 className="text-sm tracking-widest font-bold tracking-widest text-brand-green border-b border-stone-gray pb-2 mb-4">
+                <h3 className="text-sm tracking-widest font-bold tracking-widest text-primary border-b border-stone-gray pb-2 mb-4">
                   2. Pengaturan Hero Section
                 </h3>
 
@@ -1077,7 +1077,7 @@ export default function AdminDashboard() {
                       value={inputHeroLabel}
                       onChange={(e) => setInputHeroLabel(e.target.value)}
                       placeholder="Contoh: BEST SELLER"
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     />
                   </div>
 
@@ -1090,7 +1090,7 @@ export default function AdminDashboard() {
                       required
                       value={inputHeroTitle}
                       onChange={(e) => setInputHeroTitle(e.target.value)}
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     />
                   </div>
                 </div>
@@ -1105,7 +1105,7 @@ export default function AdminDashboard() {
                       required
                       value={inputHeroPrice}
                       onChange={(e) => setInputHeroPrice(Number(e.target.value))}
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     />
                   </div>
 
@@ -1118,7 +1118,7 @@ export default function AdminDashboard() {
                       required
                       value={inputHeroDimensions}
                       onChange={(e) => setInputHeroDimensions(e.target.value)}
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     />
                   </div>
                 </div>
@@ -1132,7 +1132,7 @@ export default function AdminDashboard() {
                       required
                       value={inputHeroLinkSlug}
                       onChange={(e) => setInputHeroLinkSlug(e.target.value)}
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     >
                       <option value="" disabled>Pilih Produk Target</option>
                       {products.map(product => (
@@ -1155,8 +1155,8 @@ export default function AdminDashboard() {
                       onDrop={handleHeroDrop}
                       className={`border-2 border-dashed p-4 text-center cursor-pointer relative transition-all duration-200 flex flex-col items-center justify-center min-h-[140px] mb-4
                         ${isDraggingHero
-                          ? 'border-brand-green bg-brand-green/10 text-brand-green'
-                          : 'border-stone-gray bg-bg-panel hover:border-brand-green/45 text-text-secondary hover:text-text-primary'}`}
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-stone-gray bg-bg-panel hover:border-primary/45 text-text-secondary hover:text-text-primary'}`}
                     >
                       <input
                         type="file"
@@ -1179,7 +1179,7 @@ export default function AdminDashboard() {
                             />
                           </div>
                           <div className="text-left">
-                            <div className="text-xs tracking-wider font-bold text-brand-green flex items-center gap-1">
+                            <div className="text-xs tracking-wider font-bold text-primary flex items-center gap-1">
                               <CheckCircle className="w-3 h-3" /> Berhasil Diimpor
                             </div>
                             <p className="text-[10px] text-text-secondary max-w-[200px] sm:max-w-[280px] truncate">{inputHeroImage}</p>
@@ -1198,7 +1198,7 @@ export default function AdminDashboard() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 select-none pointer-events-none">
-                          <Upload className="w-8 h-8 opacity-60 text-brand-green" />
+                          <Upload className="w-8 h-8 opacity-60 text-primary" />
                           <p className="text-xs tracking-wider font-bold text-text-primary tracking-wider">Tarik &amp; Lepas gambar di sini</p>
                           <p className="text-[10px] text-text-secondary">atau klik area ini untuk memilih berkas gambar lokal</p>
                         </div>
@@ -1214,7 +1214,7 @@ export default function AdminDashboard() {
                         value={inputHeroImage}
                         onChange={(e) => setInputHeroImage(e.target.value)}
                         placeholder="https://picsum.photos/seed/.../800/800"
-                        className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                        className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                       />
                     </div>
                   </div>
@@ -1229,14 +1229,14 @@ export default function AdminDashboard() {
                     required
                     value={inputHeroDescription}
                     onChange={(e) => setInputHeroDescription(e.target.value)}
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none leading-relaxed resize-none"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none leading-relaxed resize-none"
                   />
                 </div>
               </div>
 
               {/* Pengaturan Preorder */}
               <div className="minecraft-panel p-6 bg-bg-panel border border-stone-gray space-y-6">
-                <h3 className="text-sm tracking-widest font-bold tracking-widest text-brand-green border-b border-stone-gray pb-2 mb-4">
+                <h3 className="text-sm tracking-widest font-bold tracking-widest text-primary border-b border-stone-gray pb-2 mb-4">
                   3. Pengaturan Notifikasi Beli sekarang (Muncul di Beranda)
                 </h3>
 
@@ -1251,7 +1251,7 @@ export default function AdminDashboard() {
                       value={inputPreorderTitle}
                       onChange={(e) => setInputPreorderTitle(e.target.value)}
                       placeholder="Contoh: Beli sekarang now!"
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     />
                   </div>
 
@@ -1263,7 +1263,7 @@ export default function AdminDashboard() {
                       required
                       value={inputPreorderLinkSlug}
                       onChange={(e) => setInputPreorderLinkSlug(e.target.value)}
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                     >
                       <option value="" disabled>Pilih Produk Target</option>
                       {products.map(product => (
@@ -1286,7 +1286,7 @@ export default function AdminDashboard() {
                       value={inputPreorderDescription}
                       onChange={(e) => setInputPreorderDescription(e.target.value)}
                       placeholder="Contoh: Charge into a new adventure dengan produk kami..."
-                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none leading-relaxed resize-none"
+                      className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none leading-relaxed resize-none"
                     />
                   </div>
 
@@ -1302,8 +1302,8 @@ export default function AdminDashboard() {
                       onDrop={handlePreorderDrop}
                       className={`border-2 border-dashed p-4 text-center cursor-pointer relative transition-all duration-200 flex flex-col items-center justify-center min-h-[140px] mb-4
                         ${isDraggingPreorder
-                          ? 'border-brand-green bg-brand-green/10 text-brand-green'
-                          : 'border-stone-gray bg-bg-panel hover:border-brand-green/45 text-text-secondary hover:text-text-primary'}`}
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-stone-gray bg-bg-panel hover:border-primary/45 text-text-secondary hover:text-text-primary'}`}
                     >
                       <input
                         type="file"
@@ -1326,7 +1326,7 @@ export default function AdminDashboard() {
                             />
                           </div>
                           <div className="text-left">
-                            <div className="text-xs tracking-wider font-bold text-brand-green flex items-center gap-1">
+                            <div className="text-xs tracking-wider font-bold text-primary flex items-center gap-1">
                               <CheckCircle className="w-3 h-3" /> Berhasil Diimpor
                             </div>
                             <p className="text-[10px] text-text-secondary max-w-[200px] sm:max-w-[280px] truncate">{inputPreorderImage}</p>
@@ -1345,7 +1345,7 @@ export default function AdminDashboard() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 select-none pointer-events-none">
-                          <Upload className="w-8 h-8 opacity-60 text-brand-green" />
+                          <Upload className="w-8 h-8 opacity-60 text-primary" />
                           <p className="text-xs tracking-wider font-bold text-text-primary tracking-wider">Tarik &amp; Lepas gambar di sini</p>
                           <p className="text-[10px] text-text-secondary">atau klik area ini untuk memilih berkas gambar lokal</p>
                         </div>
@@ -1361,7 +1361,7 @@ export default function AdminDashboard() {
                         value={inputPreorderImage}
                         onChange={(e) => setInputPreorderImage(e.target.value)}
                         placeholder="https://picsum.photos/seed/.../800/800"
-                        className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                        className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                       />
                     </div>
                   </div>
@@ -1370,7 +1370,7 @@ export default function AdminDashboard() {
 
               {/* Manfaat Utama */}
               <div className="minecraft-panel p-6 bg-bg-panel border border-stone-gray space-y-6">
-                <h3 className="text-sm tracking-widest font-bold tracking-widest text-brand-green border-b border-stone-gray pb-2 mb-4">
+                <h3 className="text-sm tracking-widest font-bold tracking-widest text-primary border-b border-stone-gray pb-2 mb-4">
                   4. Manfaat Utama (Keunggulan Toko)
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1388,7 +1388,7 @@ export default function AdminDashboard() {
                           required
                           value={feat.title}
                           onChange={(e) => handleUpdateFeatureField(feat.id, 'title', e.target.value)}
-                          className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none font-bold"
+                          className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
                         />
                       </div>
 
@@ -1405,7 +1405,7 @@ export default function AdminDashboard() {
                           >
                             {(() => {
                               const IconComponent = (PhosphorIcons as any)[feat.icon] || PhosphorIcons.Package;
-                              return <IconComponent className="w-4 h-4 text-brand-green" />;
+                              return <IconComponent className="w-4 h-4 text-primary" />;
                             })()}
                           </button>
                           <input
@@ -1413,7 +1413,7 @@ export default function AdminDashboard() {
                             required
                             value={feat.icon}
                             onChange={(e) => handleUpdateFeatureField(feat.id, 'icon', e.target.value)}
-                            className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                            className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                           />
                         </div>
                       </div>
@@ -1427,7 +1427,7 @@ export default function AdminDashboard() {
                           required
                           value={feat.desc}
                           onChange={(e) => handleUpdateFeatureField(feat.id, 'desc', e.target.value)}
-                          className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none resize-none leading-relaxed text-left"
+                          className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none resize-none leading-relaxed text-left"
                         />
                       </div>
                     </div>
@@ -1480,7 +1480,7 @@ export default function AdminDashboard() {
                     value={formFields.name}
                     onChange={(e) => setFormFields({ ...formFields, name: e.target.value })}
                     placeholder="Contoh: Pot Bunga Poppy Voxel"
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                   />
                 </div>
               </div>
@@ -1495,7 +1495,7 @@ export default function AdminDashboard() {
                     value={formFields.price}
                     onChange={(e) => setFormFields({ ...formFields, price: e.target.value.replace(/[^\d]/g, '') })}
                     placeholder="Contoh: 150000"
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                   />
                 </div>
 
@@ -1505,7 +1505,7 @@ export default function AdminDashboard() {
                   <select
                     value={formFields.category}
                     onChange={(e) => setFormFields({ ...formFields, category: e.target.value as any })}
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                   >
                     <option value="Mob">Mob</option>
                     <option value="Gantungan Kunci">Gantungan Kunci</option>
@@ -1523,7 +1523,7 @@ export default function AdminDashboard() {
                     required
                     value={formFields.stock}
                     onChange={(e) => setFormFields({ ...formFields, stock: Math.max(0, parseInt(e.target.value) || 0) })}
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                   />
                   <span className="text-[10px] text-text-secondary mt-1 block">
                     {formFields.stock === 0 ? "⚠️ Status: HABIS" : `Status: STOK AKTIF (${formFields.stock})`}
@@ -1542,8 +1542,8 @@ export default function AdminDashboard() {
                   onDrop={handleDrop}
                   className={`border-2 border-dashed p-6 text-center cursor-pointer relative transition-all duration-200 flex flex-col items-center justify-center min-h-[140px]
                     ${isDragging
-                      ? 'border-brand-green bg-brand-green/10 text-brand-green'
-                      : 'border-stone-700 bg-bg-panel/50 hover:border-brand-green/45 text-text-secondary hover:text-text-primary'}`}
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-stone-700 bg-bg-panel/50 hover:border-primary/45 text-text-secondary hover:text-text-primary'}`}
                 >
                   <input
                     type="file"
@@ -1566,7 +1566,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div className="text-left">
-                        <div className="text-xs tracking-wider font-bold text-brand-green flex items-center gap-1">
+                        <div className="text-xs tracking-wider font-bold text-primary flex items-center gap-1">
                           <CheckCircle className="w-3 h-3" /> Berhasil Diimpor
                         </div>
                         <p className="text-[10px] text-text-secondary max-w-[280px] truncate">{formFields.image}</p>
@@ -1585,7 +1585,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center gap-2 select-none pointer-events-none">
-                      <Upload className="w-8 h-8 opacity-60 text-brand-green" />
+                      <Upload className="w-8 h-8 opacity-60 text-primary" />
                       <p className="text-xs tracking-wider font-bold text-text-primary tracking-wider">Tarik &amp; Lepas gambar di sini</p>
                       <p className="text-[10px] text-text-secondary">atau klik area ini untuk memilih berkas gambar lokal</p>
                     </div>
@@ -1601,7 +1601,7 @@ export default function AdminDashboard() {
                     value={formFields.image}
                     onChange={(e) => setFormFields({ ...formFields, image: e.target.value })}
                     placeholder="https://picsum.photos/seed/.../800/800"
-                    className="w-full bg-bg-panel border border-stone-700 text-text-primary p-2 text-xs tracking-wider focus:ring-1 focus:ring-brand-green focus:outline-none rounded-none text-xs tracking-wider"
+                    className="w-full bg-bg-panel border border-stone-700 text-text-primary p-2 text-xs tracking-wider focus:ring-1 focus:ring-primary focus:outline-none rounded-none text-xs tracking-wider"
                   />
                 </div>
               </div>
@@ -1614,7 +1614,7 @@ export default function AdminDashboard() {
                   onChange={(e) => setFormFields({ ...formFields, description: e.target.value })}
                   rows={3}
                   placeholder="Ceritakan detail pengerjaan manual, jenis serat kayu, ketahanan pernis, dsb..."
-                  className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                  className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                 />
               </div>
 
@@ -1627,7 +1627,7 @@ export default function AdminDashboard() {
                     value={formFields.dimensions}
                     onChange={(e) => setFormFields({ ...formFields, dimensions: e.target.value })}
                     placeholder="Contoh: 12cm x 8cm x 4cm"
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                   />
                 </div>
 
@@ -1639,7 +1639,7 @@ export default function AdminDashboard() {
                     value={formFields.material}
                     onChange={(e) => setFormFields({ ...formFields, material: e.target.value })}
                     placeholder="Contoh: Kayu Pinus, Cat Akrilik"
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                   />
                 </div>
               </div>
@@ -1652,7 +1652,7 @@ export default function AdminDashboard() {
                   value={formFields.shopee_link}
                   onChange={(e) => setFormFields({ ...formFields, shopee_link: e.target.value })}
                   placeholder="https://shopee.co.id/product-link"
-                  className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-brand-green focus:outline-none rounded-none"
+                  className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-sm tracking-widest focus:border-primary focus:outline-none rounded-none"
                 />
                 <p className="text-[10px] text-text-secondary mt-1">
                   🛒 Link produk di Shopee untuk tombol "Beli di Shopee"
@@ -1666,7 +1666,7 @@ export default function AdminDashboard() {
                   id="cheapest"
                   checked={formFields.cheapest}
                   onChange={(e) => setFormFields({ ...formFields, cheapest: e.target.checked })}
-                  className="w-4 h-4 text-brand-green border-stone-gray bg-bg-panel focus:ring-brand-green"
+                  className="w-4 h-4 text-primary border-stone-gray bg-bg-panel focus:ring-primary"
                 />
                 <label htmlFor="cheapest" className="text-xs tracking-wider font-bold text-text-primary cursor-pointer select-none">
                   🌟 Seri Ekonomis (Ikut tampil di slideshow koleksi termurah beranda)
@@ -1684,7 +1684,7 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="minecraft-btn font-bold px-6 py-2.5 text-xs tracking-wider tracking-wider flex items-center gap-2 text-text-primary bg-brand-green rounded-none cursor-pointer"
+                  className="minecraft-btn font-bold px-6 py-2.5 text-xs tracking-wider tracking-wider flex items-center gap-2 text-text-primary bg-primary rounded-none cursor-pointer"
                 >
                   <Save className="w-4 h-4" /> Simpan Produk
                 </button>
@@ -1770,7 +1770,7 @@ export default function AdminDashboard() {
           <div className="minecraft-panel max-w-3xl w-full h-[85vh] flex flex-col bg-bg-panel border-2 border-stone-gray p-6 text-left animate-zoom-in">
             <div className="flex justify-between items-center pb-4 mb-4 border-b border-stone-gray shrink-0">
               <h2 className="text-xl font-bold tracking-tight text-text-primary flex items-center gap-2">
-                <LayoutDashboard className="w-5 h-5 text-brand-green" /> Pilih Ikon Phosphor
+                <LayoutDashboard className="w-5 h-5 text-primary" /> Pilih Ikon Phosphor
               </h2>
               <button
                 onClick={() => { setIconPickerOpen(null); setIconSearch(''); }}
@@ -1787,7 +1787,7 @@ export default function AdminDashboard() {
                 placeholder="Cari ikon (contoh: Package, Check, Arrow...)"
                 value={iconSearch}
                 onChange={(e) => setIconSearch(e.target.value)}
-                className="w-full bg-bg-surface border border-stone-gray text-text-primary placeholder:text-stone-500 pl-10 pr-4 py-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                className="w-full bg-bg-surface border border-stone-gray text-text-primary placeholder:text-stone-500 pl-10 pr-4 py-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                 autoFocus
               />
             </div>
@@ -1803,7 +1803,7 @@ export default function AdminDashboard() {
                         setIconPickerOpen(null);
                         setIconSearch('');
                       }}
-                      className="p-3 border border-stone-gray bg-bg-surface hover:bg-wood-dark/20 hover:border-brand-green/30 text-text-secondary hover:text-brand-green transition-colors flex flex-col items-center justify-center gap-2 rounded-none aspect-square cursor-pointer group"
+                      className="p-3 border border-stone-gray bg-bg-surface hover:bg-wood-dark/20 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors flex flex-col items-center justify-center gap-2 rounded-none aspect-square cursor-pointer group"
                       title={iconName}
                     >
                       <DynamicIcon iconName={iconName} className="w-6 h-6" weight="regular" />

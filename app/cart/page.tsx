@@ -69,7 +69,7 @@ export default function CartPage() {
           </p>
           <Link
             href="/shop"
-            className="minecraft-btn w-full text-center py-3 bg-brand-green text-white hover:brightness-110 font-bold tracking-wider text-xs"
+            className="minecraft-btn w-full text-center py-3 bg-primary text-white hover:brightness-110 font-bold tracking-wider text-xs"
           >
             Lihat Semua Koleksi
           </Link>
@@ -85,7 +85,7 @@ export default function CartPage() {
       </Link>
 
       <h1 className="font-bold tracking-tight text-2xl md:text-3xl mb-8 flex items-center gap-3 text-text-primary">
-        <ShoppingCart className="w-8 h-8 text-brand-green" /> Keranjang Belanja
+        <ShoppingCart className="w-8 h-8 text-primary" /> Keranjang Belanja
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -162,7 +162,7 @@ export default function CartPage() {
 
             <div className="flex justify-between items-center mb-8 pt-4 border-t border-stone-gray text-sm tracking-widest font-bold text-text-primary">
               <span>Total Bayar</span>
-              <span className="text-brand-green text-lg">Rp {total.toLocaleString('id-ID')}</span>
+              <span className="text-primary text-lg">Rp {total.toLocaleString('id-ID')}</span>
             </div>
 
             <div className="space-y-4 pt-4 border-t border-stone-gray text-left">
@@ -205,7 +205,7 @@ export default function CartPage() {
                     value={detailAddress}
                     onChange={(e) => setDetailAddress(e.target.value)}
                     placeholder="Kecamatan, Jl. Merdeka No. 45, RT/RW, Kode Pos"
-                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none resize-none leading-relaxed"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none resize-none leading-relaxed"
                   />
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function CartPage() {
               <button
                 onClick={handleWhatsAppCheckout}
                 disabled={!selectedProvince || !selectedCity || !detailAddress.trim()}
-                className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-brand-green hover:brightness-110 text-text-primary border-0 cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-primary hover:brightness-110 text-text-primary border-0 cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                
                 Checkout

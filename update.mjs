@@ -43,7 +43,7 @@ content = content.replace(
 
 // 3. Replace "Ikon Lucide" and the input
 content = content.replace(
-  /<label className="block text-\[9px\] font-bold text-text-secondary mb-1">\s*Ikon Lucide\s*<\/label>\s*<input\s*type="text"\s*required\s*value=\{feat\.icon\}\s*onChange=\{\(e\) => handleUpdateFeatureField\(feat\.id, 'icon', e\.target\.value\)\}\s*className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"\s*\/>/g,
+  /<label className="block text-\[9px\] font-bold text-text-secondary mb-1">\s*Ikon Lucide\s*<\/label>\s*<input\s*type="text"\s*required\s*value=\{feat\.icon\}\s*onChange=\{\(e\) => handleUpdateFeatureField\(feat\.id, 'icon', e\.target\.value\)\}\s*className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"\s*\/>/g,
   `<label className="block text-[9px] font-bold text-text-secondary mb-1">
                             Ikon Phosphor
                          </label>
@@ -56,7 +56,7 @@ content = content.replace(
                            >
                              {(() => {
                                const IconComponent = (PhosphorIcons as any)[feat.icon] || PhosphorIcons.Package;
-                               return <IconComponent className="w-4 h-4 text-brand-green" />;
+                               return <IconComponent className="w-4 h-4 text-primary" />;
                              })()}
                            </button>
                            <input 
@@ -64,7 +64,7 @@ content = content.replace(
                              required
                              value={feat.icon}
                              onChange={(e) => handleUpdateFeatureField(feat.id, 'icon', e.target.value)}
-                             className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                             className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                            />
                          </div>`
 );
@@ -79,7 +79,7 @@ content = content.replace(
           <div className="minecraft-panel max-w-3xl w-full h-[85vh] flex flex-col bg-bg-panel border-2 border-stone-gray p-6 text-left animate-zoom-in">
             <div className="flex justify-between items-center pb-4 mb-4 border-b border-stone-gray shrink-0">
               <h2 className="text-xl font-bold tracking-tight text-text-primary flex items-center gap-2">
-                <LayoutDashboard className="w-5 h-5 text-brand-green" /> Pilih Ikon Phosphor
+                <LayoutDashboard className="w-5 h-5 text-primary" /> Pilih Ikon Phosphor
               </h2>
               <button 
                 onClick={() => { setIconPickerOpen(null); setIconSearch(''); }}
@@ -96,7 +96,7 @@ content = content.replace(
                 placeholder="Cari ikon (contoh: Package, Check, Arrow...)" 
                 value={iconSearch}
                 onChange={(e) => setIconSearch(e.target.value)}
-                className="w-full bg-bg-surface border border-stone-gray text-text-primary placeholder:text-stone-500 pl-10 pr-4 py-2 text-xs tracking-wider focus:border-brand-green focus:outline-none rounded-none"
+                className="w-full bg-bg-surface border border-stone-gray text-text-primary placeholder:text-stone-500 pl-10 pr-4 py-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
                 autoFocus
               />
             </div>
@@ -113,7 +113,7 @@ content = content.replace(
                         setIconPickerOpen(null);
                         setIconSearch('');
                       }}
-                      className="p-3 border border-stone-gray bg-bg-surface hover:bg-wood-dark/20 hover:border-brand-green/30 text-text-secondary hover:text-brand-green transition-colors flex flex-col items-center justify-center gap-2 rounded-none aspect-square cursor-pointer group"
+                      className="p-3 border border-stone-gray bg-bg-surface hover:bg-wood-dark/20 hover:border-primary/30 text-text-secondary hover:text-primary transition-colors flex flex-col items-center justify-center gap-2 rounded-none aspect-square cursor-pointer group"
                       title={iconName}
                     >
                       <IconComp className="w-6 h-6" weight="regular" />

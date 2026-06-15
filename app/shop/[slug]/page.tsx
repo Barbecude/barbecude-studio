@@ -21,7 +21,7 @@ export default function ShopProductDetail({ params }: { params: Promise<{ slug: 
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <h2 className="text-xl font-bold mb-4">Produk tidak ditemukan</h2>
-        <Link href="/shop" className="text-brand-green underline font-bold">
+        <Link href="/shop" className="text-primary underline font-bold">
           Kembali ke Toko
         </Link>
       </div>
@@ -71,7 +71,7 @@ export default function ShopProductDetail({ params }: { params: Promise<{ slug: 
                 <div
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`minecraft-panel p-1 aspect-square relative cursor-pointer rounded-none border-t-0 transition-colors ${selectedImage === img ? 'border-brand-green border-[3px]' : 'hover:border-brand-green/70 border-stone-700 border-2'}`}
+                  className={`minecraft-panel p-1 aspect-square relative cursor-pointer rounded-none border-t-0 transition-colors ${selectedImage === img ? 'border-primary border-[3px]' : 'hover:border-primary/70 border-stone-700 border-2'}`}
                 >
                   <Image src={img} alt={`Pratinjau ${idx + 1}`} fill className="object-cover" referrerPolicy="no-referrer" />
                 </div>
@@ -94,7 +94,7 @@ export default function ShopProductDetail({ params }: { params: Promise<{ slug: 
                   HABIS
                 </span>
               ) : (
-                <span className="bg-brand-green/20 text-brand-green px-2.5 py-1 text-xs tracking-wider border border-brand-green font-bold tracking-wider">
+                <span className="bg-primary/20 text-primary px-2.5 py-1 text-xs tracking-wider border border-primary font-bold tracking-wider">
                   STOK: {product.stock}
                 </span>
               )}
@@ -119,7 +119,7 @@ export default function ShopProductDetail({ params }: { params: Promise<{ slug: 
 
           <div className="space-y-4">
             {successMsg && (
-              <div className="p-3 bg-brand-green/10 text-brand-green text-xs tracking-wider font-semibold flex items-center gap-2 border border-brand-green/30 animate-fade-in">
+              <div className="p-3 bg-primary/10 text-primary text-xs tracking-wider font-semibold flex items-center gap-2 border border-primary/30 animate-fade-in">
                 <Check className="w-4 h-4" /> Berhasil ditambahkan ke keranjang belanja kamu!
               </div>
             )}

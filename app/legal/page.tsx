@@ -16,21 +16,21 @@ export default function LegalIndexPage() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link href="/terms" className="minecraft-panel border-stone-gray hover:border-brand-green group cursor-pointer text-left focus:outline-none h-full block">
-          <FileText className="w-8 h-8 text-brand-green mb-4" />
-          <h2 className="text-lg font-bold text-text-primary mb-2 tracking-wider group-hover:text-brand-green transition-colors">Syarat & Ketentuan</h2>
+        <Link href="/terms" className="minecraft-panel border-stone-gray hover:border-primary group cursor-pointer text-left focus:outline-none h-full block">
+          <FileText className="w-8 h-8 text-primary mb-4" />
+          <h2 className="text-lg font-bold text-text-primary mb-2 tracking-wider group-hover:text-primary transition-colors">Syarat & Ketentuan</h2>
           <p className="text-xs tracking-wider text-text-secondary">Aturan penggunaan layanan dan platform kami secara keseluruhan.</p>
         </Link>
 
-        <Link href="/privacy" className="minecraft-panel border-stone-gray hover:border-brand-green group cursor-pointer text-left focus:outline-none h-full block">
-          <Shield className="w-8 h-8 text-brand-green mb-4" />
-          <h2 className="text-lg font-bold text-text-primary mb-2 tracking-wider group-hover:text-brand-green transition-colors">Kebijakan Privasi</h2>
+        <Link href="/privacy" className="minecraft-panel border-stone-gray hover:border-primary group cursor-pointer text-left focus:outline-none h-full block">
+          <Shield className="w-8 h-8 text-primary mb-4" />
+          <h2 className="text-lg font-bold text-text-primary mb-2 tracking-wider group-hover:text-primary transition-colors">Kebijakan Privasi</h2>
           <p className="text-xs tracking-wider text-text-secondary">Bagaimana kami mengumpulkan, menggunakan, dan melindungi data kamu.</p>
         </Link>
 
-        <Link href="/refund" className="minecraft-panel border-stone-gray hover:border-brand-green group cursor-pointer text-left focus:outline-none h-full block">
-          <RefreshCcw className="w-8 h-8 text-brand-green mb-4" />
-          <h2 className="text-lg font-bold text-text-primary mb-2 tracking-wider group-hover:text-brand-green transition-colors">Kebijakan Pengembalian</h2>
+        <Link href="/refund" className="minecraft-panel border-stone-gray hover:border-primary group cursor-pointer text-left focus:outline-none h-full block">
+          <RefreshCcw className="w-8 h-8 text-primary mb-4" />
+          <h2 className="text-lg font-bold text-text-primary mb-2 tracking-wider group-hover:text-primary transition-colors">Kebijakan Pengembalian</h2>
           <p className="text-xs tracking-wider text-text-secondary">Panduan pengembalian dana dan garansi produk dari toko kami.</p>
         </Link>
       </div>

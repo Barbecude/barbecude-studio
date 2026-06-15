@@ -98,7 +98,7 @@ export default function GameTopupDetail({ params }: { params: Promise<{ game: st
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                    <button className="border-2 border-stone-700 bg-bg-surface p-4 flex items-center justify-between hover:border-purple-400">
                      <span className="font-bold">QRIS (Gopay, OVO, Dana)</span>
-                     <span className="text-xs tracking-wider text-accent-green">0 Fee</span>
+                     <span className="text-xs tracking-wider text-primary">0 Fee</span>
                    </button>
                    <button className="border-2 border-stone-700 bg-bg-surface p-4 flex items-center justify-between hover:border-purple-400">
                      <span className="font-bold">Bank Transfer (VA)</span>
