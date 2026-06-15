@@ -96,7 +96,9 @@ interface ProductState {
   getAllOrders: () => Order[];
 }
 
-const defaultFeatures: FeatureType[] = [
+import defaultStoreConfig from '../data/storeConfig.json';
+
+const defaultFeatures: FeatureType[] = defaultStoreConfig.features || [
   { id: 1, title: '100% Handmade', desc: 'Semua kerajinan dibuat dengan tangan degan hati - hati dan memerhatikan detail kecil untuk hasil yang berkualitas.', icon: 'HandHeart' },
   { id: 2, title: 'Lapisan Pelindung', desc: 'Untuk kerajinan kayu, digunakan pernis mengkilap tahan air yang menjaga serat alami kayu tetap awet dan terlindungi dari jamur.', icon: 'ShieldCheck' },
   { id: 3, title: 'Pengiriman aman', desc: 'Dikirimkan dengan pelindung khusus agar produk tetap utuh sampai tujuan', icon: 'Truck' }
@@ -106,25 +108,25 @@ export const useProductStore = create<ProductState>()(
   persist(
     (set, get) => ({
       products: initialProducts,
-      brandName: '',
-      brandSubtitle: '',
-      brandLogo: '',
-      brandDescription: '',
+      brandName: defaultStoreConfig.brandName || '',
+      brandSubtitle: defaultStoreConfig.brandSubtitle || '',
+      brandLogo: defaultStoreConfig.brandLogo || '',
+      brandDescription: defaultStoreConfig.brandDescription || '',
       features: defaultFeatures,
       cart: [],
       orders: [],
-      heroLabel: '',
-      heroTitle: '',
-      heroDescription: '',
-      heroImage: '',
-      heroPrice: 0,
-      heroDimensions: '',
-      heroLinkSlug: '',
+      heroLabel: defaultStoreConfig.heroLabel || '',
+      heroTitle: defaultStoreConfig.heroTitle || '',
+      heroDescription: defaultStoreConfig.heroDescription || '',
+      heroImage: defaultStoreConfig.heroImage || '',
+      heroPrice: defaultStoreConfig.heroPrice || 0,
+      heroDimensions: defaultStoreConfig.heroDimensions || '',
+      heroLinkSlug: defaultStoreConfig.heroLinkSlug || '',
 
-      preorderTitle: '',
-      preorderDescription: '',
-      preorderLinkSlug: '',
-      preorderImage: '',
+      preorderTitle: defaultStoreConfig.preorderTitle || '',
+      preorderDescription: defaultStoreConfig.preorderDescription || '',
+      preorderLinkSlug: defaultStoreConfig.preorderLinkSlug || '',
+      preorderImage: defaultStoreConfig.preorderImage || '',
 
       addProduct: (product) => set((state) => ({ products: [...state.products, product] })),
       updateProduct: (id, updated) =>

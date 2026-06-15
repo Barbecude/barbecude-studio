@@ -83,7 +83,7 @@ export default function AdminDashboard() {
     name: '',
     price: '',
     image: '',
-    description: '',
+    description: 'Dibuat dari blok kayu yang dicat akrilik, ditempel satu per satu dengan kuat, lalu difinishing pernis mengkilap.',
     dimensions: '',
     material: '',
     stock: 0,
@@ -224,6 +224,42 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleSaveDefaultsPermanently = async () => {
+    try {
+      const response = await fetch('/api/save-defaults', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brandName: inputBrandName,
+          brandSubtitle: inputBrandSubtitle,
+          brandLogo: inputBrandLogo,
+          brandDescription: inputBrandDesc,
+          heroLabel: inputHeroLabel,
+          heroTitle: inputHeroTitle,
+          heroDescription: inputHeroDescription,
+          heroImage: inputHeroImage,
+          heroPrice: inputHeroPrice,
+          heroDimensions: inputHeroDimensions,
+          heroLinkSlug: inputHeroLinkSlug,
+          preorderTitle: inputPreorderTitle,
+          preorderDescription: inputPreorderDescription,
+          preorderLinkSlug: inputPreorderLinkSlug,
+          preorderImage: inputPreorderImage,
+          features: inputFeatures
+        })
+      });
+
+      if (response.ok) {
+        showNotification('Pengaturan Permanen Berhasil Disimpan ke Kode!', 'success');
+      } else {
+        const err = await response.json();
+        showNotification(err.error || 'Gagal menyimpan pengaturan permanen', 'error');
+      }
+    } catch (error) {
+      showNotification('Terjadi kesalahan koneksi', 'error');
+    }
+  };
+
   const showNotification = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => {
@@ -237,7 +273,7 @@ export default function AdminDashboard() {
       name: '',
       price: '',
       image: '',
-      description: '',
+      description: 'Dibuat dari blok kayu yang dicat akrilik, ditempel satu per satu dengan kuat, lalu difinishing pernis mengkilap.',
       dimensions: '',
       material: '',
       stock: 0,
@@ -1398,7 +1434,15 @@ export default function AdminDashboard() {
               </div>
 
               {/* Save Controls */}
-              <div className="flex justify-end gap-3">
+              <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4 pt-4 border-t border-stone-gray">
+                <button
+                  type="button"
+                  onClick={handleSaveDefaultsPermanently}
+                  className="minecraft-panel hover:bg-bg-surface text-xs tracking-wider font-bold py-3.5 px-6 tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                  title="Simpan pengaturan saat ini secara permanen ke dalam source code agar terbawa saat deploy."
+                >
+                  <Server className="w-4 h-4" /> Simpan Permanen (Deploy)
+                </button>
                 <button
                   type="submit"
                   className="minecraft-btn text-xs tracking-wider font-bold py-3.5 px-8 tracking-widest flex items-center justify-center gap-2"
