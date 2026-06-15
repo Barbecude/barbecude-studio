@@ -1,19 +1,13 @@
 import type {Metadata} from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist } from 'next/font/google';
 import './globals.css'; // Global styles
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { AdminShortcut } from './AdminShortcut';
+import { DynamicFavicon } from '@/components/DynamicFavicon';
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
-
-const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-});
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: 'Barbecude Studio',
@@ -22,8 +16,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className={`font-sans bg-bg-primary text-text-primary min-h-screen flex flex-col`} suppressHydrationWarning>
+    <html lang="en" className={cn("font-sans", geist.variable, "dark")} style={{ colorScheme: 'dark' }}>
+      <body className="font-sans min-h-screen flex flex-col" suppressHydrationWarning>
+        <DynamicFavicon />
         <AdminShortcut />
         <Navbar />
         <main className="flex-1">

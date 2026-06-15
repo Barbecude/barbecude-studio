@@ -19,6 +19,30 @@ export interface CartItem {
   qty: number;
 }
 
+export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+export interface Order {
+  orderId: string;
+  email: string;
+  phone: string;
+  address: string;
+  country: string;
+  province: string;
+  city: string;
+  postalCode: string;
+  detailAddress: string;
+  latitude?: number;
+  longitude?: number;
+  cart: CartItem[];
+  subtotal: number;
+  shipping: number;
+  total: number;
+  status: OrderStatus;
+  qrisCode?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 interface ProductState {
   products: Product[];
   brandName: string;
@@ -27,7 +51,23 @@ interface ProductState {
   brandDescription: string;
   features: FeatureType[];
   cart: CartItem[];
-  
+  orders: Order[];
+
+  // Hero settings
+  heroLabel: string;
+  heroTitle: string;
+  heroDescription: string;
+  heroImage: string;
+  heroPrice: number;
+  heroDimensions: string;
+  heroLinkSlug: string;
+
+  // Preorder settings
+  preorderTitle: string;
+  preorderDescription: string;
+  preorderLinkSlug: string;
+  preorderImage: string;
+
   // Product actions
   addProduct: (product: Product) => void;
   updateProduct: (id: number, updated: Partial<Product>) => void;
@@ -40,45 +80,47 @@ interface ProductState {
   updateBrandDescription: (desc: string) => void;
   updateFeatures: (features: FeatureType[]) => void;
   updateFeature: (id: number, updated: Partial<FeatureType>) => void;
+  updateHeroSettings: (hero: Partial<{ heroLabel: string, heroTitle: string, heroDescription: string, heroImage: string, heroPrice: number, heroDimensions: string, heroLinkSlug: string }>) => void;
+  updatePreorderSettings: (preorder: Partial<{ preorderTitle: string, preorderDescription: string, preorderLinkSlug: string, preorderImage: string }>) => void;
 
   // Cart actions
   addToCart: (product: { id: number; name: string; price: number; image: string }, qty?: number) => void;
   removeFromCart: (id: number) => void;
   updateCartQty: (id: number, qty: number) => void;
   clearCart: () => void;
+
+  // Order actions
+  addOrder: (order: Order) => void;
+  updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+  getOrderById: (orderId: string) => Order | undefined;
+  getAllOrders: () => Order[];
 }
 
-const defaultFeatures: FeatureType[] = [
-  {
-    id: 1,
-    title: '100% Ukiran Tangan',
-    desc: 'Setiap sisi dihaluskan secara manual oleh pengrajin lokal berpengalaman dari satu pasang kayu tanpa sambung perekat.',
-    icon: 'Package',
-  },
-  {
-    id: 2,
-    title: 'Lapisan Pelindung Ganda',
-    desc: 'Menggunakan pernis doff khusus tahan air (water-resistant) untuk menjaga serat alami kayu agar tidak berjamur.',
-    icon: 'ShieldCheck',
-  },
-  {
-    id: 3,
-    title: 'Kotak Kolektor Premium',
-    desc: 'Dikirimkan bersama busa pelindung khusus di dalam kotak berlisensi kustom yang siap dipajang atau diberikan sebagai hadiah.',
-    icon: 'Cpu',
-  },
-];
+const defaultFeatures: FeatureType[] = [];
 
 export const useProductStore = create<ProductState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       products: initialProducts,
-      brandName: 'Barbecude Studio',
-      brandSubtitle: 'STUDIO',
+      brandName: '',
+      brandSubtitle: '',
       brandLogo: '',
-      brandDescription: 'Kerajinan tangan berkualitas tinggi. Bawa dunia pikselmu ke kenyataan, balok demi balok. Dekorasi balok kayu premium buatan tangan yang terinspirasi dari dunia piksel favoritmu.',
+      brandDescription: '',
       features: defaultFeatures,
       cart: [],
+      orders: [],
+      heroLabel: '',
+      heroTitle: '',
+      heroDescription: '',
+      heroImage: '',
+      heroPrice: 0,
+      heroDimensions: '',
+      heroLinkSlug: '',
+
+      preorderTitle: '',
+      preorderDescription: '',
+      preorderLinkSlug: '',
+      preorderImage: '',
 
       addProduct: (product) => set((state) => ({ products: [...state.products, product] })),
       updateProduct: (id, updated) =>
@@ -89,7 +131,7 @@ export const useProductStore = create<ProductState>()(
         set((state) => ({
           products: state.products.filter((p) => p.id !== id),
         })),
-      resetToDefault: () => set({ products: initialProducts, brandName: 'Barbecude Studio', brandSubtitle: 'STUDIO', brandLogo: '', brandDescription: 'Kerajinan tangan berkualitas tinggi. Bawa dunia pikselmu ke kenyataan, balok demi balok. Dekorasi balok kayu premium buatan tangan yang terinspirasi dari dunia piksel favoritmu.', features: defaultFeatures }),
+      resetToDefault: () => set({ products: initialProducts, brandName: '', brandSubtitle: '', brandLogo: '', brandDescription: '', features: defaultFeatures, heroLabel: '', heroTitle: '', heroDescription: '', heroImage: '', heroPrice: 0, heroDimensions: '', heroLinkSlug: '', preorderTitle: '', preorderDescription: '', preorderLinkSlug: '', preorderImage: '' }),
 
       updateBrandName: (brandName, brandSubtitle) => set((state) => ({ brandName, brandSubtitle: brandSubtitle !== undefined ? brandSubtitle : state.brandSubtitle })),
       updateBrandLogo: (brandLogo) => set({ brandLogo }),
@@ -98,6 +140,8 @@ export const useProductStore = create<ProductState>()(
       updateFeature: (id, updated) => set((state) => ({
         features: state.features.map((f) => f.id === id ? { ...f, ...updated } : f)
       })),
+      updateHeroSettings: (hero) => set((state) => ({ ...state, ...hero })),
+      updatePreorderSettings: (preorder) => set((state) => ({ ...state, ...preorder })),
 
       addToCart: (product, qty = 1) => set((state) => {
         const existing = state.cart.find((item) => item.id === product.id);
@@ -121,9 +165,68 @@ export const useProductStore = create<ProductState>()(
         ),
       })),
       clearCart: () => set({ cart: [] }),
+
+      addOrder: (order) => set((state) => ({ orders: [...state.orders, order] })),
+      updateOrderStatus: (orderId, status) => set((state) => ({
+        orders: state.orders.map((order) =>
+          order.orderId === orderId
+            ? { ...order, status, updatedAt: Date.now() }
+            : order
+        ),
+      })),
+      getOrderById: (orderId) => {
+        const state = get();
+        return state.orders.find((order) => order.orderId === orderId);
+      },
+      getAllOrders: () => {
+        const state = get();
+        return state.orders;
+      },
     }),
     {
       name: 'voxelwood-products-store',
+      storage: {
+        getItem: async (name) => {
+          if (typeof window === 'undefined') return null;
+          try {
+            const { get, set } = await import('idb-keyval');
+            const value = await get(name);
+            if (value) {
+              return typeof value === 'string' ? JSON.parse(value) : value;
+            }
+            
+            const localValue = localStorage.getItem(name);
+            if (localValue) {
+              const parsed = JSON.parse(localValue);
+              await set(name, localValue);
+              return parsed;
+            }
+          } catch (e) {
+            console.error('Error reading from IDB:', e);
+          }
+          return null;
+        },
+        setItem: async (name, value) => {
+          if (typeof window === 'undefined') return;
+          try {
+            const { set } = await import('idb-keyval');
+            await set(name, JSON.stringify(value));
+            localStorage.removeItem(name);
+          } catch (e) {
+            console.error('Error writing to IDB:', e);
+          }
+        },
+        removeItem: async (name) => {
+          if (typeof window === 'undefined') return;
+          try {
+            const { del } = await import('idb-keyval');
+            await del(name);
+            localStorage.removeItem(name);
+          } catch (e) {
+            console.error('Error removing from IDB:', e);
+          }
+        },
+      },
     }
   )
 );
@@ -182,7 +285,7 @@ export function useBrandName() {
     setMounted(true);
   }, []);
 
-  return mounted ? name : 'Barbecude Studio';
+  return mounted ? name : '';
 }
 
 export function useBrandSubtitle() {
@@ -193,7 +296,7 @@ export function useBrandSubtitle() {
     setMounted(true);
   }, []);
 
-  return mounted ? subtitle : 'STUDIO';
+  return mounted ? subtitle : '';
 }
 
 export function useBrandLogo() {
@@ -215,5 +318,62 @@ export function useBrandDescription() {
     setMounted(true);
   }, []);
 
-  return mounted ? desc : 'Kerajinan tangan berkualitas tinggi. Bawa dunia pikselmu ke kenyataan, balok demi balok. Dekorasi balok kayu premium buatan tangan yang terinspirasi dari dunia piksel favoritmu.';
+  return mounted ? desc : '';
+}
+
+export function useHeroSettings() {
+  const heroLabel = useProductStore((state) => state.heroLabel);
+  const heroTitle = useProductStore((state) => state.heroTitle);
+  const heroDescription = useProductStore((state) => state.heroDescription);
+  const heroImage = useProductStore((state) => state.heroImage);
+  const heroPrice = useProductStore((state) => state.heroPrice);
+  const heroDimensions = useProductStore((state) => state.heroDimensions);
+  const heroLinkSlug = useProductStore((state) => state.heroLinkSlug);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return mounted ? { heroLabel, heroTitle, heroDescription, heroImage, heroPrice, heroDimensions, heroLinkSlug } : {
+    heroLabel: '',
+    heroTitle: '',
+    heroDescription: '',
+    heroImage: '',
+    heroPrice: 0,
+    heroDimensions: '',
+    heroLinkSlug: '',
+  };
+}
+
+export function useOrders() {
+  const storeOrders = useProductStore((state) => state.orders);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return mounted ? storeOrders : [];
+}
+
+export function usePreorderSettings() {
+  const preorderTitle = useProductStore((state) => state.preorderTitle);
+  const preorderDescription = useProductStore((state) => state.preorderDescription);
+  const preorderLinkSlug = useProductStore((state) => state.preorderLinkSlug);
+  const preorderImage = useProductStore((state) => state.preorderImage);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return mounted ? { preorderTitle, preorderDescription, preorderLinkSlug, preorderImage } : {
+    preorderTitle: '',
+    preorderDescription: '',
+    preorderLinkSlug: '',
+    preorderImage: '',
+  };
 }

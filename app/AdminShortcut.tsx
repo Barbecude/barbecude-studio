@@ -49,9 +49,9 @@ export function AdminShortcut() {
   if (!isPrompting) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center font-sans">
+    <div className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center">
       <form onSubmit={handleSubmit} className="minecraft-panel p-8 bg-bg-panel border border-stone-gray animate-fade-in text-center">
-        <h2 className="text-xl font-bold  tracking-widest text-brand-green mb-4 font-mono">Restricted Access</h2>
+        <h2 className="text-xl font-bold tracking-widest text-brand-green mb-4">Restricted Access</h2>
         <input 
           id="secret-admin-input"
           type="password" 
@@ -61,8 +61,8 @@ export function AdminShortcut() {
           className="w-full bg-bg-panel border border-stone-gray text-center text-text-primary p-3 text-lg focus:border-brand-green focus:outline-none rounded-none tracking-[0.5em] mb-4"
         />
         <div className="flex gap-4">
-           <button type="button" onClick={() => setIsPrompting(false)} className="minecraft-btn w-full bg-bg-light text-text-secondary border-0 text-xs uppercase tracking-wider py-3 font-bold ">Cancel</button>
-           <button type="submit" className="minecraft-btn w-full border-0 text-xs uppercase tracking-wider py-3 font-bold ">Login</button>
+           <button type="button" onClick={() => setIsPrompting(false)} className="minecraft-btn w-full bg-bg-light text-text-secondary border-0 text-xs tracking-wider py-3 font-bold">Cancel</button>
+           <button type="submit" className="minecraft-btn w-full border-0 text-xs tracking-wider py-3 font-bold">Login</button>
         </div>
       </form>
     </div>
