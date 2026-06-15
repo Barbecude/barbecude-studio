@@ -158,7 +158,15 @@ export default function AdminDashboard() {
   }, [storeBrandDesc]);
 
   useEffect(() => {
-    setInputFeatures(storeFeatures);
+    if (!storeFeatures || storeFeatures.length === 0) {
+      setInputFeatures([
+        { id: 1, title: '', desc: '', icon: 'Package' },
+        { id: 2, title: '', desc: '', icon: 'Package' },
+        { id: 3, title: '', desc: '', icon: 'Package' }
+      ]);
+    } else {
+      setInputFeatures(storeFeatures);
+    }
   }, [storeFeatures]);
 
   useEffect(() => {
