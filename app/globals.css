@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@theme {
+  --color-bg-primary: #050505;       /* Pure dark space */
+  --color-bg-surface: #0a0a0a;       /* Obsidian surface */
+  --color-bg-panel: #111111;         /* Deep slate panel */
+  --color-bg-light: #1a1a1a;         /* Soft highlight */
+
+  --color-brand-green: #10B981;      /* Emerald tech green */
+  --color-stone-gray: #262626;       /* Sharp border gray */
+  --color-dirt-brown: #3f2e1e;       /* Deep warm rich brown */
+
+  --color-text-primary: #FAFAFA;     /* White text */
+  --color-text-secondary: #94A3B8;   /* Cool muted slate text */
+
+  /* Domain specific colorful professional accents */
+  --color-accent-wood: #D97706;      /* Rich warm gold cedar wood */
+  --color-accent-blue: #0EA5E9;      /* Diamond sky cyan */
+  --color-accent-purple: #8B5CF6;    /* Enchanted obsidian purple */
+  --color-accent-red: #FA002F;       /* Fast candy red */
+
+  --color-wood-warm: #D97706;        /* Backward compatibility fallback mapping */
+  --color-wood-dark: #78350F;
+  --color-grass-green: #10B981;
+  --color-accent-gold: #F59E0B;
+  --color-accent-green: #10B981;
+
+  --font-sans: var(--font-sans), sans-serif;
+  --font-mono: var(--font-mono), monospace;
+  --font-pixel: var(--font-sans), sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-primary text-text-primary antialiased;
+  }
+}
+
+.minecraft-panel {
+  @apply bg-bg-surface border border-stone-gray p-8 relative overflow-hidden transition-all duration-300 rounded-none;
+}
+.minecraft-panel:hover {
+  @apply border-[#444] shadow-[0_8px_30px_rgba(0,0,0,0.6)];
+}
+
+.minecraft-panel-wood {
+  @apply bg-bg-surface border border-stone-gray p-8 relative overflow-hidden transition-all duration-300 rounded-none;
+}
+.minecraft-panel-wood:hover {
+  border-color: var(--color-accent-wood);
+  box-shadow: 0 8px 30px rgba(217, 119, 6, 0.15);
+}
+
+.minecraft-panel-blue {
+  @apply bg-bg-surface border border-stone-gray p-8 relative overflow-hidden transition-all duration-300 rounded-none;
+}
+.minecraft-panel-blue:hover {
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 8px 30px rgba(14, 165, 233, 0.15);
+}
+
+.minecraft-panel-purple {
+  @apply bg-bg-surface border border-stone-gray p-8 relative overflow-hidden transition-all duration-300 rounded-none;
+}
+.minecraft-panel-purple:hover {
+  border-color: var(--color-accent-purple);
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+}
+
+.minecraft-btn {
+  @apply bg-brand-green text-white font-bold text-sm py-3 px-6 transition-all duration-200 rounded-none border border-transparent flex items-center justify-center uppercase tracking-widest;
+}
+
+.minecraft-btn:hover {
+  @apply brightness-110 shadow-[0_0_20px_rgba(16,185,129,0.35)];
+}
+
+.minecraft-btn-gold {
+  @apply bg-transparent text-text-primary border-2 border-stone-gray font-bold text-sm py-2 px-6 transition-all duration-200 rounded-none uppercase tracking-widest;
+}
+
+.minecraft-btn-gold:hover {
+  @apply bg-bg-panel border-[#444];
+}
+
+/* Custom Premium Styled Scrollbar (Anti-Chrome Default) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10B981;
+}
+
+/* Custom scrollbar with green highlight specifically for horizontal lists */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 0px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #10B981;
+}
+
+/* hide native scrollbar default classes if fallback needed */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
