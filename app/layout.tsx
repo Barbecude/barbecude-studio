@@ -7,7 +7,12 @@ import { AdminShortcut } from './AdminShortcut';
 import { DynamicFavicon } from '@/components/DynamicFavicon';
 import { cn } from "@/lib/utils";
 
-import { StoreInitializer } from '@/components/StoreInitializer';
+import { StoreHydrator } from '@/components/StoreHydrator';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -16,12 +21,20 @@ export const metadata: Metadata = {
   description: 'Craft. Host. Play. — all in one world.',
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default async function RootLayout({children}: {children: React.ReactNode}) {
+  let config = null;
+  try {
+    const { data } = await supabase.from('store_config').select('config').eq('id', 1).single();
+    if (data?.config) config = data.config;
+  } catch (err) {
+    console.error("SSR fetch config error:", err);
+  }
+
   return (
     <html lang="en" className={cn("font-sans", geist.variable, "dark")} style={{ colorScheme: 'dark' }}>
       <body className="font-sans min-h-screen flex flex-col" suppressHydrationWarning>
         <DynamicFavicon />
-        <StoreInitializer />
+        <StoreHydrator config={config} />
         <AdminShortcut />
         <Navbar />
         <main className="flex-1">
