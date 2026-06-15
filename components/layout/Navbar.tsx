@@ -115,7 +115,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href="/cart" className="minecraft-btn gap-2 py-2 px-4 shadow-sm">
+          <Link href="/cart" className="minecraft-btn gap-2 h-10 px-4 shadow-sm">
             <ShoppingCart className="w-4 h-4" />
             <span className="hidden sm:inline">Keranjang</span>
             <span className="bg-black/30 px-1.5 py-0.5 rounded-none text-xs">{cartCount}</span>
@@ -124,8 +124,7 @@ export function Navbar() {
           {/* Mobile toggle */}
           <Button
             variant="outline"
-            size="icon"
-            className="md:hidden rounded-none border-stone-gray bg-transparent text-text-primary hover:bg-bg-panel"
+            className="md:hidden rounded-none border-stone-gray bg-transparent text-text-primary hover:bg-bg-panel h-10 w-10 p-0"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <Menu className="w-5 h-5" />

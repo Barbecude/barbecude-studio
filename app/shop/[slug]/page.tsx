@@ -124,12 +124,11 @@ export default function ShopProductDetail({ params }: { params: Promise<{ slug: 
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-row gap-3">
               {product.stock === 0 ? (
                 <Button
                   disabled
-                  size="lg"
-                  className="flex-1 text-sm tracking-widest font-bold flex items-center justify-center gap-2"
+                  className="flex-1 h-12 text-sm tracking-widest font-bold flex items-center justify-center gap-2"
                 >
                   <AlertCircle className="w-4 h-4" /> Stok Habis
                 </Button>
@@ -137,17 +136,15 @@ export default function ShopProductDetail({ params }: { params: Promise<{ slug: 
                 <>
                   <Button
                     onClick={handleBuyNow}
-                    size="lg"
-                    className="flex-1 text-xs font-bold tracking-widest "
+                    className="flex-1 h-12 text-xs sm:text-sm font-bold tracking-widest rounded-none"
                   >
                     BELI SEKARANG
                   </Button>
 
                   <Button
                     onClick={handleAddToCart}
-                    size="lg"
                     variant="outline"
-                    className="px-4 aspect-square shrink-0 border-stone-gray text-stone-400 hover:text-stone-200 bg-transparent hover:bg-stone-800/50"
+                    className="h-12 w-12 shrink-0 border-stone-gray text-stone-400 hover:text-stone-200 bg-transparent hover:bg-stone-800/50 p-0 rounded-none flex items-center justify-center"
                     title="Tambah ke Keranjang"
                   >
                     <ShoppingCart className="w-5 h-5" />

@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { StoreHydrator } from '@/components/StoreHydrator';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
