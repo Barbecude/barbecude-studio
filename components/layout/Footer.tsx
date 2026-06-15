@@ -15,8 +15,8 @@ export function Footer() {
         <div className="col-span-1 md:col-span-2 text-left">
           <Link href="/" className="flex items-center gap-3 group w-fit">
             {brandLogo ? (
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-border transition-transform duration-300">
-                <img src={brandLogo} alt="Brand Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <div className="relative w-10 h-10 overflow-hidden border border-border transition-transform duration-300" style={{ borderRadius: '50%' }}>
+                <img src={brandLogo} alt="Brand Logo" className="w-full h-full object-cover" style={{ borderRadius: '50%' }} referrerPolicy="no-referrer" />
               </div>
             ) : (
               <div className="relative w-8 h-8 bg-primary rounded-md flex items-center justify-center transition-transform duration-300">
