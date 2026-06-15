@@ -15,7 +15,9 @@ export interface Product {
   shopee_link?: string; // Link to Shopee product
 }
 
-export const products: Product[] = [];
+import defaultStoreConfig from '../data/storeConfig.json';
+
+export const products: Product[] = (defaultStoreConfig as any).products || [];
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find(p => p.slug === slug);
