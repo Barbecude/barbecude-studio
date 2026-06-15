@@ -118,16 +118,20 @@ export default function Home() {
       {/* 1. HERO SECTION */}
       <section className="relative w-full h-screen flex items-center justify-start overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero-section.png"
-            alt={`Hero - ${heroSettings.heroTitle}`}
-            fill
-            className="object-cover object-center"
-            referrerPolicy="no-referrer"
-            priority
-            unoptimized={true}
-            quality={100}
-          />
+          {heroSettings.heroImage && heroSettings.heroImage.trim() !== '' ? (
+            <Image
+              src={heroSettings.heroImage}
+              alt={`Hero - ${heroSettings.heroTitle}`}
+              fill
+              className="object-cover object-center"
+              referrerPolicy="no-referrer"
+              priority
+              unoptimized={true}
+              quality={100}
+            />
+          ) : (
+            <div className="w-full h-full bg-muted" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent w-full" />
         </div>
 

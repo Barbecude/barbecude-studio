@@ -138,6 +138,9 @@ export default function AdminDashboard() {
   const [inputHeroPrice, setInputHeroPrice] = useState(storeHeroPrice);
   const [inputHeroDimensions, setInputHeroDimensions] = useState(storeHeroDimensions);
   const [inputHeroLinkSlug, setInputHeroLinkSlug] = useState(storeHeroLinkSlug);
+  const [heroImageMode, setHeroImageMode] = useState<'upload' | 'gallery'>(() => {
+    return (storeHeroImage === '/images/hero-section.png' || storeHeroImage === '/images/panda.png') ? 'gallery' : 'upload';
+  });
 
   const [inputPreorderTitle, setInputPreorderTitle] = useState(storePreorderTitle);
   const [inputPreorderDescription, setInputPreorderDescription] = useState(storePreorderDescription);
@@ -179,6 +182,7 @@ export default function AdminDashboard() {
     setInputHeroTitle(storeHeroTitle);
     setInputHeroDescription(storeHeroDescription);
     setInputHeroImage(storeHeroImage);
+    setHeroImageMode((storeHeroImage === '/images/hero-section.png' || storeHeroImage === '/images/panda.png') ? 'gallery' : 'upload');
     setInputHeroPrice(storeHeroPrice);
     setInputHeroDimensions(storeHeroDimensions);
     setInputHeroLinkSlug(storeHeroLinkSlug);
@@ -220,7 +224,7 @@ export default function AdminDashboard() {
         preorderLinkSlug: inputPreorderLinkSlug,
         preorderImage: inputPreorderImage
       });
-      
+
       // Save to Supabase
       await saveStoreConfig();
       showNotification('Pengaturan Brand berhasil disimpan ke Database!', 'success');
@@ -1139,36 +1143,116 @@ export default function AdminDashboard() {
                       Gambar Hero
                     </label>
 
-                    {/* Drag-and-drop zone container (DISABLED) */}
-                    <div
-                      className="border-2 border-dashed p-4 text-center relative flex flex-col items-center justify-center min-h-[140px] mb-4 border-stone-gray bg-bg-panel text-text-secondary opacity-50 cursor-not-allowed"
-                    >
-                      <input
-                        type="file"
-                        id="hero-image-uploader"
-                        accept="image/*"
-                        disabled
-                        className="hidden"
-                      />
+                    {/* Image Mode Selector */}
+                    <div className="flex gap-2 mb-4">
+                      <button
+                        type="button"
+                        onClick={() => setHeroImageMode('upload')}
+                        className={`flex-1 py-2 text-[10px] font-bold tracking-wider border transition-colors ${heroImageMode === 'upload' ? 'bg-primary text-bg-dark border-primary' : 'bg-bg-panel text-text-secondary border-stone-gray hover:text-text-primary'}`}
+                      >
+                        Upload Sendiri
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setHeroImageMode('gallery')}
+                        className={`flex-1 py-2 text-[10px] font-bold tracking-wider border transition-colors ${heroImageMode === 'gallery' ? 'bg-primary text-bg-dark border-primary' : 'bg-bg-panel text-text-secondary border-stone-gray hover:text-text-primary'}`}
+                      >
+                        Pilih dari Galeri
+                      </button>
+                    </div>
 
-                      <div className="flex flex-col items-center gap-2 select-none pointer-events-none">
-                        <Upload className="w-8 h-8 opacity-40 text-primary" />
-                        <p className="text-xs tracking-wider font-bold text-text-primary tracking-wider">Upload Dinonaktifkan</p>
-                        <p className="text-[10px] text-text-secondary">Gambar hero dikunci ke mode statis</p>
+                    {heroImageMode === 'gallery' ? (
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div
+                          onClick={() => setInputHeroImage('/images/hero-section.png')}
+                          className={`relative cursor-pointer border-2 transition-all p-1 ${inputHeroImage === '/images/hero-section.png' ? 'border-primary' : 'border-stone-gray hover:border-primary/50'}`}
+                        >
+                          <img src="/images/hero-section.png" alt="Hero 1" className="w-full h-24 object-cover" />
+                          {inputHeroImage === '/images/hero-section.png' && (
+                            <div className="absolute top-2 right-2 bg-primary text-bg-dark rounded-full p-0.5"><CheckCircle className="w-4 h-4" /></div>
+                          )}
+                        </div>
+                        <div
+                          onClick={() => setInputHeroImage('/images/panda.png')}
+                          className={`relative cursor-pointer border-2 transition-all p-1 ${inputHeroImage === '/images/panda.png' ? 'border-primary' : 'border-stone-gray hover:border-primary/50'}`}
+                        >
+                          <img src="/images/panda.png" alt="Panda" className="w-full h-24 object-cover" />
+                          {inputHeroImage === '/images/panda.png' && (
+                            <div className="absolute top-2 right-2 bg-primary text-bg-dark rounded-full p-0.5"><CheckCircle className="w-4 h-4" /></div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <>
+                        <div
+                          onDragOver={handleHeroDragOver}
+                          onDragLeave={handleHeroDragLeave}
+                          onDrop={handleHeroDrop}
+                          className={`border-2 border-dashed p-4 text-center cursor-pointer relative transition-all duration-200 flex flex-col items-center justify-center min-h-[140px] mb-4
+                            ${isDraggingHero
+                              ? 'border-primary bg-primary/10 text-primary'
+                              : 'border-stone-gray bg-bg-panel hover:border-primary/45 text-text-secondary hover:text-text-primary'}`}
+                        >
+                          <input
+                            type="file"
+                            id="hero-image-uploader"
+                            accept="image/*"
+                            onChange={handleHeroFileSelect}
+                            className="hidden"
+                          />
 
-                    <div className="mt-2 text-left z-20 relative opacity-50 cursor-not-allowed">
-                      <label className="block text-[10px] font-bold text-text-secondary mb-1">
-                        Atau tempel Link URL Gambar Manual (Dikunci):
-                      </label>
-                      <input
-                        type="text"
-                        value="/images/hero-section.png"
-                        disabled
-                        className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:outline-none rounded-none cursor-not-allowed"
-                      />
-                    </div>
+                          <label htmlFor="hero-image-uploader" className="absolute inset-0 cursor-pointer w-full h-full z-10" />
+
+                          {inputHeroImage && !inputHeroImage.startsWith('/images/') ? (
+                            <div className="flex flex-col sm:flex-row items-center gap-4 py-2 z-20 w-full justify-center">
+                              <div className="relative w-16 h-16 border border-stone-gray overflow-hidden bg-bg-panel shrink-0">
+                                <img
+                                  src={inputHeroImage}
+                                  alt="Pratinjau Unggahan Hero"
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="text-left">
+                                <div className="text-xs tracking-wider font-bold text-primary flex items-center gap-1">
+                                  <CheckCircle className="w-3 h-3" /> Berhasil Diimpor
+                                </div>
+                                <p className="text-[10px] text-text-secondary max-w-[200px] sm:max-w-[280px] truncate">{inputHeroImage}</p>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setInputHeroImage('');
+                                  }}
+                                  className="text-[10px] text-red-400 font-bold underline hover:text-red-300 mt-1 cursor-pointer z-30 relative"
+                                >
+                                  Hapus Gambar
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center gap-2 select-none pointer-events-none">
+                              <Upload className="w-8 h-8 opacity-60 text-primary" />
+                              <p className="text-xs tracking-wider font-bold text-text-primary tracking-wider">Tarik &amp; Lepas gambar di sini</p>
+                              <p className="text-[10px] text-text-secondary">atau klik area ini untuk memilih berkas gambar lokal</p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="mt-2 text-left z-20 relative">
+                          <label className="block text-[10px] font-bold text-text-secondary mb-1">
+                            Atau tempel Link URL Gambar Manual:
+                          </label>
+                          <input
+                            type="text"
+                            value={inputHeroImage && inputHeroImage.startsWith('/images/') ? '' : inputHeroImage}
+                            onChange={(e) => setInputHeroImage(e.target.value)}
+                            placeholder="https://picsum.photos/seed/.../800/800"
+                            className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none"
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
