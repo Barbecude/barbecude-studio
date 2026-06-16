@@ -293,7 +293,21 @@ export const useProductStore = create<ProductState>()(
               : order
           ),
         }));
-        await supabase.from('orders').update({ status, updated_at: Date.now() }).eq('order_id', orderId);
+        
+        try {
+          const res = await fetch('/api/orders/update-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId, status })
+          });
+          const data = await res.json();
+          if (!data.success) {
+            console.error("Failed to update status on server:", data.error);
+            // Optionally, we could revert the optimistic update here if needed.
+          }
+        } catch (err) {
+          console.error("Error calling update-status API:", err);
+        }
       },
       getOrderById: (orderId) => {
         const state = get();
