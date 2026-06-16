@@ -120,7 +120,7 @@ export default function CartPage() {
         // setShowQrisModal(true); // Sudah dipanggil di awal
       } else {
         setShowQrisModal(false);
-        alert('Gagal menampilkan QRIS Louvin');
+        alert(data.error || 'Gagal menampilkan QRIS Louvin');
       }
     } catch (err) {
       console.error("Failed to generate QRIS", err);
