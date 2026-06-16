@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ShoppingCart, Menu, Box, Server, Gamepad2 } from 'lucide-react';
 import { useBrandName, useBrandSubtitle, useBrandLogo, useCart } from '@/lib/productStore';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export function Navbar() {
@@ -115,13 +115,11 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button asChild className="gap-2 h-10 px-4 rounded-none font-bold tracking-widest shadow-sm">
-            <Link href="/cart">
-              <ShoppingCart className="w-4 h-4" />
-              <span className="hidden sm:inline">Keranjang</span>
-              <span className="bg-black/30 px-1.5 py-0.5 rounded-none text-xs text-primary-foreground">{cartCount}</span>
-            </Link>
-          </Button>
+          <Link href="/cart" className={cn(buttonVariants({ variant: "default" }), "gap-2 h-10 px-4 rounded-none font-bold tracking-widest shadow-sm")}>
+            <ShoppingCart className="w-4 h-4" />
+            <span className="hidden sm:inline">Keranjang</span>
+            <span className="bg-black/30 px-1.5 py-0.5 rounded-none text-xs text-primary-foreground">{cartCount}</span>
+          </Link>
 
           {/* Mobile toggle */}
           <Button
