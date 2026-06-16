@@ -43,8 +43,28 @@ export async function POST(req: Request) {
         const amountStr = orderData.amount ? `Rp ${orderData.amount.toLocaleString('id-ID')}` : 'Lunas';
         
         if (phone) {
+          // Format product list
+          let productList = '';
+          const items = rawData?.items || [];
+          if (items.length > 0) {
+            items.forEach((item: any, idx: number) => {
+              productList += `${idx + 1}. ${item.name} (${item.qty}x)\n`;
+            });
+          } else {
+            productList = '- Data produk tidak ditemukan\n';
+          }
+
+          // Format address
+          let addressStr = '';
+          const addr = rawData?.address;
+          if (addr) {
+            addressStr = `${addr.detail}\n${addr.city}, Provinsi ${addr.province}`;
+          } else {
+            addressStr = 'Alamat tidak ditemukan';
+          }
+
           // Format the message
-          const waMessage = `Halo ${orderData.customer_name || 'Kak'}!\n\nPembayaran Anda sebesar ${amountStr} untuk pesanan dengan ID *${merchantRef}* telah kami terima.\n\nPesanan Anda akan segera kami proses. Terima kasih telah berbelanja di Barbecude Studio!`;
+          const waMessage = `Halo kak!\nIni rekap pesanan kamu ya:\n${productList}\nPesanan akan di kirim ke alamat ini:\n${addressStr}\n\nKalau ada pertanyaan seputar pesanan, boleh banget langsung balas pesan ini.`;
           
           // Send WA
           // We don't await this to avoid blocking the webhook response

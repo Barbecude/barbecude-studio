@@ -99,7 +99,12 @@ export default function CartPage() {
           amount: total,
           customerName: "Pembeli Barbecude",
           customerPhone: phoneNumber,
-          items: cartItems
+          items: cartItems,
+          address: {
+            province: selectedProvince,
+            city: selectedCity,
+            detail: detailAddress
+          }
         })
       });
       const data = await res.json();

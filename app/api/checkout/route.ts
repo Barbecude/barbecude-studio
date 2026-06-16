@@ -7,13 +7,13 @@ const LOUVIN_API_URL = 'https://api.louvin.dev/create-transaction';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { amount, customerName, customerEmail, customerPhone } = body;
+    const { amount, customerName, customerEmail, customerPhone, items, address } = body;
 
     // 1. Generate unique merchant reference
     const merchantRef = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     // 2. Prepare payload for Louvin
-    const payload = {
+    const louvinPayload = {
       reference: merchantRef,
       amount: amount,
       payment_type: 'qris',
@@ -23,6 +23,13 @@ export async function POST(req: Request) {
       description: `Order ${merchantRef}`
     };
 
+    // Data lengkap untuk disimpan di database kita (dibutuhkan oleh Webhook)
+    const fullCheckoutData = {
+      ...louvinPayload,
+      items: items || [],
+      address: address || null
+    };
+
     // 3. Request QRIS to Louvin
     const response = await fetch(LOUVIN_API_URL, {
       method: 'POST',
@@ -30,7 +37,7 @@ export async function POST(req: Request) {
         'x-api-key': LOUVIN_API_KEY,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(louvinPayload)
     });
 
     const data = await response.json();
@@ -53,7 +60,7 @@ export async function POST(req: Request) {
         status: 'UNPAID',
         customer_name: customerName,
         qris_url: qrString,
-        raw_checkout_data: payload
+        raw_checkout_data: fullCheckoutData
       });
 
     if (dbError) {
