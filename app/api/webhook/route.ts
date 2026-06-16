@@ -34,6 +34,26 @@ export async function POST(req: Request) {
       }
 
       console.log('Pembayaran berhasil diupdate:', merchantRef, updatedData);
+
+      // Extract phone number from the updated order
+      if (updatedData && updatedData.length > 0) {
+        const orderData = updatedData[0];
+        const rawData = orderData.raw_checkout_data;
+        const phone = rawData?.customer_phone;
+        const amountStr = orderData.amount ? `Rp ${orderData.amount.toLocaleString('id-ID')}` : 'Lunas';
+        
+        if (phone) {
+          // Format the message
+          const waMessage = `Halo ${orderData.customer_name || 'Kak'}!\n\nPembayaran Anda sebesar ${amountStr} untuk pesanan dengan ID *${merchantRef}* telah kami terima.\n\nPesanan Anda akan segera kami proses. Terima kasih telah berbelanja di Barbecude Studio!`;
+          
+          // Send WA
+          // We don't await this to avoid blocking the webhook response
+          import('@/lib/waGateway').then(({ sendWhatsAppMessage }) => {
+            sendWhatsAppMessage(phone, waMessage);
+          });
+        }
+      }
+
     } else if (type === 'payment.failed') {
       if (merchantRef) {
         console.log(`Updating order ${merchantRef} to FAILED...`);
