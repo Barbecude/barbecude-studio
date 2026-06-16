@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingCart, Trash2, ArrowLeft, MessageCircle, ChevronRight, X, QrCode } from 'lucide-react';
@@ -25,6 +25,9 @@ export default function CartPage() {
   const [detailAddress, setDetailAddress] = useState('');
   const [showQrisModal, setShowQrisModal] = useState(false);
   const [qrisDataUrl, setQrisDataUrl] = useState('');
+  const [merchantRef, setMerchantRef] = useState('');
+  const [isPaid, setIsPaid] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
   const shipping = cartItems.length > 0 ? 25000 : 0;
@@ -35,6 +38,28 @@ export default function CartPage() {
     updateCartQty(id, newQty);
   };
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (showQrisModal && merchantRef && !isPaid) {
+      interval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/check-status?ref=${merchantRef}`);
+          const data = await res.json();
+          if (data.status === 'PAID') {
+            setIsPaid(true);
+            setTimeout(() => {
+              setShowQrisModal(false);
+              clearCart();
+            }, 4000); // Close modal and clear cart after 4s
+          }
+        } catch (e) {
+          // silent error
+        }
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [showQrisModal, merchantRef, isPaid, clearCart]);
+
   const handleCheckoutClick = async () => {
     if (!selectedProvince || !selectedCity || !detailAddress.trim()) {
       alert('Mohon lengkapi provinsi, kota, dan alamat pengiriman kamu');
@@ -42,20 +67,40 @@ export default function CartPage() {
     }
     
     try {
-      const dynamicQrisString = generateDynamicQRIS(total);
-      const dataUrl = await QRCode.toDataURL(dynamicQrisString, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#ffffff'
-        }
+      setIsGenerating(true);
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: total,
+          customerName: "Pembeli Barbecude",
+          items: cartItems
+        })
       });
-      setQrisDataUrl(dataUrl);
-      setShowQrisModal(true);
+      const data = await res.json();
+
+      if (data.success && data.qr_string) {
+        // Generate QR Code image from Louvin's raw qr_string
+        const dataUrl = await QRCode.toDataURL(data.qr_string, {
+          width: 300,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#ffffff'
+          }
+        });
+        setQrisDataUrl(dataUrl);
+        setMerchantRef(data.merchant_ref);
+        setIsPaid(false);
+        setShowQrisModal(true);
+      } else {
+        alert('Gagal menampilkan QRIS Louvin');
+      }
     } catch (err) {
       console.error("Failed to generate QRIS", err);
-      alert('Gagal menampilkan QRIS');
+      alert('Gagal memproses ke server');
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -240,12 +285,12 @@ export default function CartPage() {
 
               <button
                 onClick={handleCheckoutClick}
-                disabled={!selectedProvince || !selectedCity || !detailAddress.trim()}
+                disabled={!selectedProvince || !selectedCity || !detailAddress.trim() || isGenerating}
                 className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-primary hover:brightness-110 text-text-primary border-0 cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                
-                Checkout & Bayar
-                <ChevronRight className="w-4 h-4" />
+                {isGenerating ? 'Memproses...' : 'Checkout & Bayar'}
+                {!isGenerating && <ChevronRight className="w-4 h-4" />}
               </button>
 
               <p className="text-[10px] text-text-secondary text-center leading-relaxed">
@@ -284,29 +329,43 @@ export default function CartPage() {
               Silakan scan QR code di bawah ini menggunakan aplikasi M-Banking atau E-Wallet kamu.
             </p>
 
-            <div className="bg-white p-2 rounded-xl mb-6 relative group overflow-hidden">
-              {qrisDataUrl ? (
-                <Image src={qrisDataUrl} alt="QRIS Payment" width={250} height={250} className="rounded-lg mix-blend-multiply" unoptimized />
-              ) : (
-                <div className="w-[250px] h-[250px] bg-stone-100 animate-pulse rounded-lg" />
-              )}
-            </div>
+            {isPaid ? (
+              <div className="w-full bg-green-500/10 border border-green-500 p-8 flex flex-col items-center justify-center rounded-xl mb-6 animate-in zoom-in duration-300">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4 text-white font-bold text-2xl">
+                  ✓
+                </div>
+                <h3 className="text-xl font-bold text-green-500 mb-2">Pembayaran Berhasil!</h3>
+                <p className="text-sm text-text-secondary mt-2 px-4 text-center leading-relaxed">
+                  Admin kami akan segera menghubungi WhatsApp kamu untuk detail pengiriman.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="bg-white p-2 rounded-xl mb-6 relative group overflow-hidden">
+                  {qrisDataUrl ? (
+                    <Image src={qrisDataUrl} alt="QRIS Payment" width={250} height={250} className="rounded-lg mix-blend-multiply" unoptimized />
+                  ) : (
+                    <div className="w-[250px] h-[250px] bg-stone-100 animate-pulse rounded-lg" />
+                  )}
+                </div>
 
-            <div className="w-full bg-bg-surface p-4 border border-stone-gray mb-6">
-              <p className="text-[10px] text-text-secondary tracking-widest uppercase mb-1">Total Tagihan</p>
-              <p className="text-2xl font-bold text-primary">Rp {total.toLocaleString('id-ID')}</p>
-            </div>
+                <div className="w-full bg-bg-surface p-4 border border-stone-gray mb-6">
+                  <p className="text-[10px] text-text-secondary tracking-widest uppercase mb-1">Total Tagihan</p>
+                  <p className="text-2xl font-bold text-primary">Rp {total.toLocaleString('id-ID')}</p>
+                </div>
 
-            <button
-              onClick={() => {
-                setShowQrisModal(false);
-                handleWhatsAppCheckout();
-              }}
-              className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-[#25D366] hover:brightness-110 text-white border-0 cursor-pointer transition-all flex items-center justify-center gap-2"
-            >
-              Saya Sudah Bayar
-              <ChevronRight className="w-4 h-4" />
-            </button>
+                <button
+                  onClick={() => {
+                    setShowQrisModal(false);
+                    handleWhatsAppCheckout();
+                  }}
+                  className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-stone-700 hover:bg-stone-600 text-white border-0 cursor-pointer transition-all flex items-center justify-center gap-2"
+                >
+                  Bayar Manual (Konfirmasi di WA)
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
