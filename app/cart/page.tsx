@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, Trash2, ArrowLeft, MessageCircle, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Trash2, ArrowLeft, MessageCircle, ChevronRight, X, QrCode } from 'lucide-react';
 import { useCart, useProductStore } from '@/lib/productStore';
 import { indonesiaData } from '@/lib/indonesiaData';
+import QRCode from 'qrcode';
+import { generateDynamicQRIS } from '@/lib/qris';
 import {
   Select,
   SelectContent,
@@ -21,6 +23,8 @@ export default function CartPage() {
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [detailAddress, setDetailAddress] = useState('');
+  const [showQrisModal, setShowQrisModal] = useState(false);
+  const [qrisDataUrl, setQrisDataUrl] = useState('');
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
   const shipping = cartItems.length > 0 ? 25000 : 0;
@@ -29,6 +33,30 @@ export default function CartPage() {
   const handleQtyChange = (id: number, currentQty: number, change: number) => {
     const newQty = Math.max(1, currentQty + change);
     updateCartQty(id, newQty);
+  };
+
+  const handleCheckoutClick = async () => {
+    if (!selectedProvince || !selectedCity || !detailAddress.trim()) {
+      alert('Mohon lengkapi provinsi, kota, dan alamat pengiriman kamu');
+      return;
+    }
+    
+    try {
+      const dynamicQrisString = generateDynamicQRIS(total);
+      const dataUrl = await QRCode.toDataURL(dynamicQrisString, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      });
+      setQrisDataUrl(dataUrl);
+      setShowQrisModal(true);
+    } catch (err) {
+      console.error("Failed to generate QRIS", err);
+      alert('Gagal menampilkan QRIS');
+    }
   };
 
   const handleWhatsAppCheckout = () => {
@@ -211,17 +239,17 @@ export default function CartPage() {
               </div>
 
               <button
-                onClick={handleWhatsAppCheckout}
+                onClick={handleCheckoutClick}
                 disabled={!selectedProvince || !selectedCity || !detailAddress.trim()}
                 className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-primary hover:brightness-110 text-text-primary border-0 cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                
-                Checkout
+                Checkout & Bayar
                 <ChevronRight className="w-4 h-4" />
               </button>
 
               <p className="text-[10px] text-text-secondary text-center leading-relaxed">
-                Kamu akan diarahkan ke WhatsApp untuk melanjutkan pemesanan
+                Kamu akan melakukan pembayaran via QRIS sebelum diarahkan ke WhatsApp
               </p>
             </div>
 
@@ -233,6 +261,55 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      {/* QRIS Modal */}
+      {showQrisModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-bg-panel border border-stone-gray max-w-sm w-full p-6 relative flex flex-col items-center text-center shadow-2xl">
+            <button 
+              onClick={() => setShowQrisModal(false)}
+              className="absolute top-4 right-4 text-text-secondary hover:text-text-primary"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mb-4 text-primary">
+              <QrCode className="w-6 h-6" />
+            </div>
+
+            <h2 className="text-xl font-bold tracking-widest text-text-primary mb-2">
+              Pembayaran QRIS
+            </h2>
+            <p className="text-text-secondary text-xs tracking-wider mb-6 leading-relaxed">
+              Silakan scan QR code di bawah ini menggunakan aplikasi M-Banking atau E-Wallet kamu.
+            </p>
+
+            <div className="bg-white p-2 rounded-xl mb-6 relative group overflow-hidden">
+              {qrisDataUrl ? (
+                <Image src={qrisDataUrl} alt="QRIS Payment" width={250} height={250} className="rounded-lg mix-blend-multiply" unoptimized />
+              ) : (
+                <div className="w-[250px] h-[250px] bg-stone-100 animate-pulse rounded-lg" />
+              )}
+            </div>
+
+            <div className="w-full bg-bg-surface p-4 border border-stone-gray mb-6">
+              <p className="text-[10px] text-text-secondary tracking-widest uppercase mb-1">Total Tagihan</p>
+              <p className="text-2xl font-bold text-primary">Rp {total.toLocaleString('id-ID')}</p>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowQrisModal(false);
+                handleWhatsAppCheckout();
+              }}
+              className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-[#25D366] hover:brightness-110 text-white border-0 cursor-pointer transition-all flex items-center justify-center gap-2"
+            >
+              Saya Sudah Bayar
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
