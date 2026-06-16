@@ -23,9 +23,21 @@ import {
   CheckCircle,
   Warning as AlertTriangle,
   Upload,
-  Image as FileImage
+  Image as FileImage,
+  Hourglass,
+  Package,
+  Truck,
+  House,
+  XCircle
 } from '@phosphor-icons/react';
 import * as PhosphorIcons from '@phosphor-icons/react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from '@/lib/supabase';
 
 import { availableIcons } from '@/lib/phosphorIconsList';
@@ -696,21 +708,37 @@ export default function AdminDashboard() {
                         </p>
                       </div>
                       <div className="flex flex-col gap-2">
-                        <select
+                        <Select
                           value={order.status}
-                          onChange={(e) => {
-                            updateOrderStatus(order.orderId, e.target.value as OrderStatus);
-                            showNotification(`Status pesanan ${order.orderId} diubah menjadi ${e.target.value}`, 'success');
+                          onValueChange={(value) => {
+                            updateOrderStatus(order.orderId, value as OrderStatus);
+                            showNotification(`Status pesanan ${order.orderId} diubah menjadi ${value}`, 'success');
                           }}
-                          className="bg-bg-panel border-2 border-stone-gray text-text-primary px-4 py-2 text-xs tracking-wider font-bold focus:border-primary focus:outline-none rounded-none"
                         >
-                          <option value="pending">⏳ Menunggu Konfirmasi</option>
-                          <option value="confirmed">✅ Dikonfirmasi</option>
-                          <option value="processing">📦 Sedang Diproses</option>
-                          <option value="shipped">🚚 Dalam Pengiriman</option>
-                          <option value="delivered">🏠 Telah Diterima</option>
-                          <option value="cancelled">❌ Dibatalkan</option>
-                        </select>
+                          <SelectTrigger className="w-[200px] bg-bg-panel border-2 border-stone-gray text-text-primary px-4 py-2 text-xs tracking-wider font-bold focus:border-primary focus:outline-none rounded-none">
+                            <SelectValue placeholder="Pilih Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">
+                              <div className="flex items-center gap-2"><Hourglass className="w-4 h-4 text-yellow-500" /> Menunggu Konfirmasi</div>
+                            </SelectItem>
+                            <SelectItem value="confirmed">
+                              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> Dikonfirmasi</div>
+                            </SelectItem>
+                            <SelectItem value="processing">
+                              <div className="flex items-center gap-2"><Package className="w-4 h-4 text-blue-400" /> Sedang Diproses</div>
+                            </SelectItem>
+                            <SelectItem value="shipped">
+                              <div className="flex items-center gap-2"><Truck className="w-4 h-4 text-orange-400" /> Dalam Pengiriman</div>
+                            </SelectItem>
+                            <SelectItem value="delivered">
+                              <div className="flex items-center gap-2"><House className="w-4 h-4 text-primary" /> Telah Diterima</div>
+                            </SelectItem>
+                            <SelectItem value="cancelled">
+                              <div className="flex items-center gap-2"><XCircle className="w-4 h-4 text-red-500" /> Dibatalkan</div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
                         <span className={`text-xs tracking-wider font-bold text-center px-3 py-1.5 border-2
                           ${order.status === 'delivered' ? 'border-primary text-primary bg-primary/10' :
                             order.status === 'cancelled' ? 'border-red-500 text-red-500 bg-red-500/10' :
@@ -774,7 +802,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-text-secondary tracking-wider">TOTAL PEMBAYARAN</p>
-                        <p className="text-2xl font-bold text-primary tracking-wider">
+                        <p className="text-2xl font-bold text-emerald-400 tracking-wider">
                           Rp {order.total.toLocaleString('id-ID')}
                         </p>
                       </div>
@@ -894,7 +922,7 @@ export default function AdminDashboard() {
                               {product.category}
                             </span>
                           </td>
-                          <td className="py-4 text-xs tracking-wider font-bold text-primary">
+                          <td className="py-4 text-xs tracking-wider font-bold text-emerald-400">
                             Rp {product.price.toLocaleString('id-ID')}
                           </td>
                           <td className="py-4 text-xs tracking-wider font-bold">
@@ -961,9 +989,9 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Sales performance simulation logs */}
+            {/* Sales performance logs */}
             <div className="minecraft-panel p-6">
-              <h2 className="font-bold text-lg mb-4 pb-2 border-b-2 border-stone-gray tracking-wider text-text-primary">Log Transaksi Terkini (Simulasi Toko)</h2>
+              <h2 className="font-bold text-lg mb-4 pb-2 border-b-2 border-stone-gray tracking-wider text-text-primary">Log Transaksi Terkini</h2>
               <table className="w-full text-sm tracking-widest">
                 <thead>
                   <tr className="text-left text-text-secondary border-b border-stone-gray text-xs tracking-wider font-bold">
@@ -975,27 +1003,33 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-800/30 text-xs tracking-wider">
-                  <tr className="text-text-primary">
-                    <td className="py-3">#TRX-V9012</td>
-                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-primary text-primary">E-Commerce</span></td>
-                    <td className="py-3 font-bold">Alex Doe</td>
-                    <td className="py-3">Rp 150.000</td>
-                    <td className="py-3"><span className="text-primary text-[10px] font-bold">Lunas</span></td>
-                  </tr>
-                  <tr className="text-text-primary">
-                    <td className="py-3">#TRX-V9011</td>
-                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-primary text-primary">E-Commerce</span></td>
-                    <td className="py-3 font-bold">Sarah Lee</td>
-                    <td className="py-3">Rp 350.000</td>
-                    <td className="py-3"><span className="text-yellow-400 text-[10px] font-bold">Diproses</span></td>
-                  </tr>
-                  <tr className="text-text-primary">
-                    <td className="py-3">#TRX-V9010</td>
-                    <td className="py-3"><span className="text-[10px] font-bold border px-1 border-primary text-primary">E-Commerce</span></td>
-                    <td className="py-3 font-bold">Mike R.</td>
-                    <td className="py-3">Rp 45.000</td>
-                    <td className="py-3"><span className="text-primary text-[10px] font-bold">Lunas</span></td>
-                  </tr>
+                  {orders.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-stone-500">Belum ada transaksi</td>
+                    </tr>
+                  ) : (
+                    [...orders]
+                      .sort((a, b) => b.createdAt - a.createdAt)
+                      .slice(0, 5)
+                      .map((order) => (
+                        <tr key={order.orderId} className="text-text-primary">
+                          <td className="py-3 font-mono">{order.orderId.substring(0, 15)}...</td>
+                          <td className="py-3"><span className="text-[10px] font-bold border px-1 border-primary text-primary">Web Store</span></td>
+                          <td className="py-3 font-bold">{order.email || 'Guest'}</td>
+                          <td className="py-3">Rp {order.total.toLocaleString('id-ID')}</td>
+                          <td className="py-3">
+                            <span className={`text-[10px] font-bold uppercase ${
+                              order.status === 'PAID' ? 'text-green-500' :
+                              order.status === 'UNPAID' ? 'text-red-500' :
+                              order.status === 'pending' ? 'text-yellow-500' :
+                              'text-primary'
+                            }`}>
+                              {order.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                  )}
                 </tbody>
               </table>
             </div>

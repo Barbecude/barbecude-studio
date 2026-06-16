@@ -21,7 +21,7 @@ export interface CartItem {
   qty: number;
 }
 
-export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'UNPAID' | 'PAID' | 'FAILED';
 
 export interface Order {
   orderId: string;
