@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
       if (!merchantRef) {
         console.error("Webhook Error: Missing reference ID in payload", payload);
-        return NextResponse.json({ error: 'Missing reference ID' }, { status: 400 });
+        return NextResponse.json({ error: 'Missing reference ID' }, { status: 200 }); // Louvin requires 200
       }
 
       console.log(`Updating order ${merchantRef} to PAID...`);
@@ -34,6 +34,14 @@ export async function POST(req: Request) {
       }
 
       console.log('Pembayaran berhasil diupdate:', merchantRef, updatedData);
+    } else if (type === 'payment.failed') {
+      if (merchantRef) {
+        console.log(`Updating order ${merchantRef} to FAILED...`);
+        await supabase
+          .from('orders')
+          .update({ status: 'FAILED' })
+          .eq('merchant_ref', merchantRef);
+      }
     } else {
       console.log('Ignored webhook event type:', type, 'Status:', payload?.status);
     }
