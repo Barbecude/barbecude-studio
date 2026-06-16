@@ -50,17 +50,34 @@ export async function POST(req: Request) {
     const qrString = data.payment?.qr_string || '';
     const louvinRef = data.transaction?.id || '';
 
-    // 4. Store order in Supabase
+    // 4. Store order in Supabase with all required columns
     const { error: dbError } = await supabase
       .from('orders')
       .insert({
+        order_id: merchantRef,
         merchant_ref: merchantRef,
         louvin_reference: louvinRef,
         amount: amount,
         status: 'UNPAID',
         customer_name: customerName,
         qris_url: qrString,
-        raw_checkout_data: fullCheckoutData
+        raw_checkout_data: fullCheckoutData,
+        // Kolom tambahan untuk menghindari error 23502 (NOT NULL violation)
+        email: customerEmail || 'customer@example.com',
+        phone: customerPhone || '',
+        address: address?.detail || '',
+        country: 'Indonesia',
+        province: address?.province || '',
+        city: address?.city || '',
+        postal_code: '',
+        detail_address: address?.detail || '',
+        cart: items || [],
+        subtotal: amount,
+        shipping: 0,
+        total: amount,
+        qris_code: qrString,
+        created_at: Date.now(),
+        updated_at: Date.now()
       });
 
     if (dbError) {
