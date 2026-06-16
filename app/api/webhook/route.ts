@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 // Louvin Webhook Handler
 export async function POST(req: Request) {
@@ -21,15 +21,15 @@ export async function POST(req: Request) {
       }
 
       console.log(`Updating order ${merchantRef} to PAID...`);
-      // Update Supabase
-      const { data: updatedData, error } = await supabase
+      // Update Supabase menggunakan Admin Client (Bypass RLS)
+      const { data: updatedData, error } = await supabaseAdmin
         .from('orders')
         .update({ status: 'PAID' })
         .eq('merchant_ref', merchantRef)
         .select();
 
       if (error) {
-        console.error("Failed to update supabase. Check your Supabase RLS Policies! Error:", error);
+        console.error("Failed to update supabase. Error:", error);
         return NextResponse.json({ received: false, error: 'Database error' }, { status: 200 });
       }
 
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     } else if (type === 'payment.failed') {
       if (merchantRef) {
         console.log(`Updating order ${merchantRef} to FAILED...`);
-        await supabase
+        await supabaseAdmin
           .from('orders')
           .update({ status: 'FAILED' })
           .eq('merchant_ref', merchantRef);
