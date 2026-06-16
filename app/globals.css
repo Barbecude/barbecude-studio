@@ -78,7 +78,7 @@
 }
 
 .minecraft-btn:hover {
-  @apply brightness-110 shadow-[0_0_20px_rgba(16,185,129,0.35)];
+  @apply brightness-110 shadow-[0_0_15px_rgba(255,255,255,0.15)];
 }
 
 .minecraft-btn-gold {
