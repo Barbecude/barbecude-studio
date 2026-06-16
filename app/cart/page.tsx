@@ -66,7 +66,7 @@ export default function CartPage() {
     if (showQrisModal && merchantRef && !isPaid) {
       interval = setInterval(async () => {
         try {
-          const res = await fetch(`/api/check-status?ref=${merchantRef}`);
+          const res = await fetch(`/api/check-status?ref=${merchantRef}&t=${Date.now()}`);
           const data = await res.json();
           if (data.status === 'PAID') {
             setIsPaid(true);
@@ -405,7 +405,7 @@ export default function CartPage() {
                   <div className="flex items-start gap-2 mt-3 bg-yellow-500/10 p-2.5 rounded border border-yellow-500/20 w-full text-left">
                     <WarningCircle size={16} weight="fill" className="text-yellow-500 shrink-0 mt-0.5" />
                     <p className="text-[10px] text-yellow-500 font-bold leading-relaxed">
-                      Sebelum membayar, pastikan nomor telepon mu benar untuk melihat pesanan.
+                      Sebelum membayar, pastikan nomor telepon mu benar untuk melihat status pesanan di WhatsApp.
                     </p>
                   </div>
                 </div>
@@ -414,17 +414,6 @@ export default function CartPage() {
                   <p className="text-[10px] text-text-secondary tracking-widest uppercase mb-1">Total Tagihan</p>
                   <p className="text-2xl font-bold text-primary">Rp {total.toLocaleString('id-ID')}</p>
                 </div>
-
-                <button
-                  onClick={() => {
-                    setShowQrisModal(false);
-                    handleWhatsAppCheckout();
-                  }}
-                  className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-stone-700 hover:bg-stone-600 text-white border-0 cursor-pointer transition-all flex items-center justify-center gap-2"
-                >
-                  Bayar Manual (Konfirmasi di WA)
-                  <ChevronRight className="w-4 h-4" />
-                </button>
 
                 <a 
                   href="https://wa.me/6287822803782?text=Halo%20saya%20butuh%20bantuan%20terkait%20pesanan%20saya"

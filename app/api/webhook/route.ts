@@ -5,28 +5,37 @@ import { supabase } from '@/lib/supabase';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { event, data } = body;
+    console.log("=== WEBHOOK RECEIVED ===", JSON.stringify(body, null, 2));
 
-    if (event === 'payment.settled') {
-      const merchantRef = data.order_id || data.reference;
+    const { event, data } = body;
+    const type = body.type || event; 
+    const payload = data || body.data || body;
+    const merchantRef = payload?.order_id || payload?.reference || payload?.merchant_ref || payload?.id;
+
+    // Menyesuaikan beberapa kemungkinan status sukses dari payment gateway
+    if (type === 'payment.settled' || type === 'transaction.success' || payload?.transaction_status === 'settlement' || payload?.status === 'success' || payload?.status === 'PAID') {
 
       if (!merchantRef) {
+        console.error("Webhook Error: Missing reference ID in payload", payload);
         return NextResponse.json({ error: 'Missing reference ID' }, { status: 400 });
       }
 
+      console.log(`Updating order ${merchantRef} to PAID...`);
       // Update Supabase
-      const { error } = await supabase
+      const { data: updatedData, error } = await supabase
         .from('orders')
         .update({ status: 'PAID' })
-        .eq('merchant_ref', merchantRef);
+        .eq('merchant_ref', merchantRef)
+        .select();
 
       if (error) {
-        console.error("Failed to update supabase:", error);
-        // Selalu return 200 untuk webhook Louvin agar tidak dianggap gagal oleh mereka
+        console.error("Failed to update supabase. Check your Supabase RLS Policies! Error:", error);
         return NextResponse.json({ received: false, error: 'Database error' }, { status: 200 });
       }
 
-      console.log('Pembayaran berhasil:', merchantRef);
+      console.log('Pembayaran berhasil diupdate:', merchantRef, updatedData);
+    } else {
+      console.log('Ignored webhook event type:', type, 'Status:', payload?.status);
     }
 
     // PENTING: selalu return 200
