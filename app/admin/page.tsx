@@ -26,6 +26,7 @@ import {
   Image as FileImage
 } from '@phosphor-icons/react';
 import * as PhosphorIcons from '@phosphor-icons/react';
+import { supabase } from '@/lib/supabase';
 
 import { availableIcons } from '@/lib/phosphorIconsList';
 
@@ -149,6 +150,25 @@ export default function AdminDashboard() {
   const [inputPreorderImage, setInputPreorderImage] = useState(storePreorderImage);
 
   const [isDraggingPreorder, setIsDraggingPreorder] = useState(false);
+  const [inputShippingFee, setInputShippingFee] = useState(0);
+
+  useEffect(() => {
+    async function fetchShippingFee() {
+      try {
+        const { data, error } = await supabase
+          .from('settings')
+          .select('value')
+          .eq('id', 'shipping_fee')
+          .single();
+        if (data && !error) {
+          setInputShippingFee(Number(data.value) || 0);
+        }
+      } catch (err) {
+        console.error('Failed to load shipping fee', err);
+      }
+    }
+    fetchShippingFee();
+  }, []);
 
   useEffect(() => {
     fetch('/api/gallery')
@@ -237,9 +257,10 @@ export default function AdminDashboard() {
         preorderImage: inputPreorderImage
       });
 
-      // Save to Supabase
+      // Save shipping fee and store config to Supabase
+      await supabase.from('settings').upsert({ id: 'shipping_fee', value: inputShippingFee.toString() });
       await saveStoreConfig();
-      showNotification('Pengaturan Brand berhasil disimpan ke Database!', 'success');
+      showNotification('Pengaturan Brand & Ongkos Kirim berhasil disimpan!', 'success');
     } catch (e: any) {
       console.error('Error saving brand settings:', e);
       if (e.name === 'QuotaExceededError' || e.message?.includes('quota')) {
@@ -1423,10 +1444,33 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Pengaturan Ongkos Kirim */}
+              <div className="minecraft-panel p-6 bg-bg-panel border border-stone-gray space-y-6">
+                <h3 className="text-sm tracking-widest font-bold tracking-widest text-primary border-b border-stone-gray pb-2 mb-4">
+                  4. Pengaturan Ongkos Kirim
+                </h3>
+                <div>
+                  <label className="block text-[10px] font-bold text-text-secondary mb-2 tracking-wider">
+                    Biaya Ongkos Kirim (Rp)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    required
+                    value={inputShippingFee}
+                    onChange={(e) => setInputShippingFee(Number(e.target.value))}
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-3 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none font-bold"
+                  />
+                  <p className="text-[10px] text-text-secondary mt-2">
+                    Ketik 0 jika ingin gratis ongkir. Biaya ini akan ditambahkan otomatis ke total belanja customer.
+                  </p>
+                </div>
+              </div>
+
               {/* Manfaat Utama */}
               <div className="minecraft-panel p-6 bg-bg-panel border border-stone-gray space-y-6">
                 <h3 className="text-sm tracking-widest font-bold tracking-widest text-primary border-b border-stone-gray pb-2 mb-4">
-                  4. Manfaat Utama (Keunggulan Toko)
+                  5. Manfaat Utama (Keunggulan Toko)
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {inputFeatures.map((feat) => (
