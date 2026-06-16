@@ -8,6 +8,7 @@ import { useCart, useProductStore } from '@/lib/productStore';
 import { indonesiaData } from '@/lib/indonesiaData';
 import QRCode from 'qrcode';
 import { generateDynamicQRIS } from '@/lib/qris';
+import { supabase } from '@/lib/supabase';
 import {
   Select,
   SelectContent,
@@ -28,9 +29,29 @@ export default function CartPage() {
   const [merchantRef, setMerchantRef] = useState('');
   const [isPaid, setIsPaid] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [shippingFee, setShippingFee] = useState(0); // Default 0
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const { data, error } = await supabase
+          .from('settings')
+          .select('value')
+          .eq('id', 'shipping_fee')
+          .single();
+        
+        if (data && !error) {
+          setShippingFee(Number(data.value) || 0);
+        }
+      } catch (err) {
+        console.error("Failed to fetch shipping fee:", err);
+      }
+    }
+    fetchSettings();
+  }, []);
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
-  const shipping = cartItems.length > 0 ? 25000 : 0;
+  const shipping = cartItems.length > 0 ? shippingFee : 0;
   const total = subtotal + shipping;
 
   const handleQtyChange = (id: number, currentQty: number, change: number) => {
