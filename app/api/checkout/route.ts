@@ -7,7 +7,7 @@ const LOUVIN_API_URL = 'https://api.louvin.dev/create-transaction';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { amount, customerName, customerEmail } = body;
+    const { amount, customerName, customerEmail, customerPhone } = body;
 
     // 1. Generate unique merchant reference
     const merchantRef = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       payment_type: 'qris',
       customer_name: customerName || 'Pelanggan Barbecude',
       customer_email: customerEmail || 'customer@example.com',
+      customer_phone: customerPhone || '',
       description: `Order ${merchantRef}`
     };
 

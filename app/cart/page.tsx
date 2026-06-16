@@ -7,6 +7,7 @@ import { ShoppingCart, Trash2, ArrowLeft, MessageCircle, ChevronRight, X, QrCode
 import { useCart, useProductStore } from '@/lib/productStore';
 import { indonesiaData } from '@/lib/indonesiaData';
 import QRCode from 'qrcode';
+import { WarningCircle, PencilSimple } from '@phosphor-icons/react';
 import { generateDynamicQRIS } from '@/lib/qris';
 import { supabase } from '@/lib/supabase';
 import {
@@ -24,6 +25,7 @@ export default function CartPage() {
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [detailAddress, setDetailAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [showQrisModal, setShowQrisModal] = useState(false);
   const [qrisDataUrl, setQrisDataUrl] = useState('');
   const [merchantRef, setMerchantRef] = useState('');
@@ -82,19 +84,21 @@ export default function CartPage() {
   }, [showQrisModal, merchantRef, isPaid, clearCart]);
 
   const handleCheckoutClick = async () => {
-    if (!selectedProvince || !selectedCity || !detailAddress.trim()) {
-      alert('Mohon lengkapi provinsi, kota, dan alamat pengiriman kamu');
+    if (!selectedProvince || !selectedCity || !detailAddress.trim() || !phoneNumber.trim()) {
+      alert('Mohon lengkapi provinsi, kota, alamat pengiriman, dan nomor telepon kamu');
       return;
     }
     
     try {
       setIsGenerating(true);
+      setShowQrisModal(true); // Tampilkan popup instant dengan skeleton
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: total,
           customerName: "Pembeli Barbecude",
+          customerPhone: phoneNumber,
           items: cartItems
         })
       });
@@ -113,12 +117,14 @@ export default function CartPage() {
         setQrisDataUrl(dataUrl);
         setMerchantRef(data.merchant_ref);
         setIsPaid(false);
-        setShowQrisModal(true);
+        // setShowQrisModal(true); // Sudah dipanggil di awal
       } else {
+        setShowQrisModal(false);
         alert('Gagal menampilkan QRIS Louvin');
       }
     } catch (err) {
       console.error("Failed to generate QRIS", err);
+      setShowQrisModal(false);
       alert('Gagal memproses ke server');
     } finally {
       setIsGenerating(false);
@@ -138,7 +144,7 @@ export default function CartPage() {
       message += `${index + 1}. ${item.name} (${item.qty}x)\n`;
     });
 
-    message += `\nTolong kirimkan ke alamat:\n${detailAddress}\n${selectedCity}, Provinsi ${selectedProvince}`;
+    message += `\nTolong kirimkan ke alamat:\n${detailAddress}\n${selectedCity}, Provinsi ${selectedProvince}\nNo. Telp: ${phoneNumber}`;
 
     // Encode message untuk URL
     const encodedMessage = encodeURIComponent(message);
@@ -302,11 +308,23 @@ export default function CartPage() {
                     className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none resize-none leading-relaxed"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-text-secondary mb-1">Nomor Telepon (WhatsApp) *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="Contoh: 08123456789"
+                    className="w-full bg-bg-panel border border-stone-gray text-text-primary p-2 text-xs tracking-wider focus:border-primary focus:outline-none rounded-none h-10"
+                  />
+                </div>
               </div>
 
               <button
                 onClick={handleCheckoutClick}
-                disabled={!selectedProvince || !selectedCity || !detailAddress.trim() || isGenerating}
+                disabled={!selectedProvince || !selectedCity || !detailAddress.trim() || !phoneNumber.trim() || isGenerating}
                 className="minecraft-btn w-full text-xs tracking-wider font-bold py-3.5 bg-primary hover:brightness-110 text-text-primary border-0 cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                
@@ -362,12 +380,34 @@ export default function CartPage() {
               </div>
             ) : (
               <>
-                <div className="bg-white p-2 rounded-xl mb-6 relative group overflow-hidden">
-                  {qrisDataUrl ? (
+                <div className="bg-white p-2 rounded-xl mb-4 relative group overflow-hidden">
+                  {qrisDataUrl && !isGenerating ? (
                     <Image src={qrisDataUrl} alt="QRIS Payment" width={250} height={250} className="rounded-lg mix-blend-multiply" unoptimized />
                   ) : (
-                    <div className="w-[250px] h-[250px] bg-stone-100 animate-pulse rounded-lg" />
+                    <div className="w-[250px] h-[250px] bg-stone-100 animate-pulse rounded-lg flex items-center justify-center">
+                      <p className="text-stone-400 text-xs font-bold animate-pulse">Menyiapkan QRIS...</p>
+                    </div>
                   )}
+                </div>
+                
+                <div className="mb-6 w-full text-center">
+                  <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">No. Telp Pembeli</p>
+                  <div className="flex items-center justify-center gap-2 mt-1">
+                    <p className="text-sm font-bold text-text-primary">{phoneNumber}</p>
+                    <button 
+                      onClick={() => setShowQrisModal(false)}
+                      className="text-stone-400 hover:text-primary transition-colors cursor-pointer"
+                      title="Edit Nomor Telepon"
+                    >
+                      <PencilSimple size={16} weight="bold" />
+                    </button>
+                  </div>
+                  <div className="flex items-start gap-2 mt-3 bg-yellow-500/10 p-2.5 rounded border border-yellow-500/20 w-full text-left">
+                    <WarningCircle size={16} weight="fill" className="text-yellow-500 shrink-0 mt-0.5" />
+                    <p className="text-[10px] text-yellow-500 font-bold leading-relaxed">
+                      Sebelum membayar, pastikan nomor telepon mu benar untuk melihat pesanan.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="w-full bg-bg-surface p-4 border border-stone-gray mb-6">
@@ -385,6 +425,16 @@ export default function CartPage() {
                   Bayar Manual (Konfirmasi di WA)
                   <ChevronRight className="w-4 h-4" />
                 </button>
+
+                <a 
+                  href="https://wa.me/6287822803782?text=Halo%20saya%20butuh%20bantuan%20terkait%20pesanan%20saya"
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="mt-4 flex items-center justify-center gap-2 text-[10px] text-text-secondary hover:text-primary transition-colors cursor-pointer"
+                >
+                  <MessageCircle className="w-3 h-3" />
+                  Butuh bantuan? Hubungi CS
+                </a>
               </>
             )}
           </div>
